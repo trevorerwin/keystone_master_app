@@ -2,6 +2,8 @@
  * Variabless
  */
 
+const dungeonDict = ['YARD', 'STRT', 'GD', 'WORK', 'ID', 'GMBT', 'UPPR', 'LOWR'];
+
 const keystoneCodeBlock =
   '<h3 class="keystone-dungeon-name"></h3>' + '<h3 class="keystone-dungeon-affixes"></h3>' + '<h3 class="keystone-dungeon-time"></h3>' + '<h3 class="keystone-dungeon-score"></h3>';
 
@@ -12,7 +14,6 @@ const charName = document.querySelector('.char-text');
 const submitBtn = document.querySelector('.submit-btn');
 const keystoneDungeonList = document.querySelector('.keystone-best-runs');
 const keystoneInfoSection = document.querySelector('.keystone-info');
-// const keystoneDungeon = document.querySelector('.keystone-dungeon');
 
 /**
  * Event Listeners
@@ -83,6 +84,7 @@ function processDungeonData(data) {
   const keystoneDungeon = addDungeonDiv();
 
   // append dungeon divs based on number of dungeons in current season
+  // to keystone-best-runs
   keystoneInfoSection.style.display = 'block';
   appendNCopies(data.mythic_plus_best_runs.length, keystoneDungeon, keystoneDungeonList);
 
@@ -93,9 +95,17 @@ function processDungeonData(data) {
   insertDungeonData(dungeons, bestDungeonRuns);
 }
 
+/**
+ * insertDungeonData(): add dungeon data into the UI
+ *
+ * @param {Object} dungeons: a list of keystone-dungeon divs
+ * @param {Object} dungeonList: JSON object containing the characters mythic+ * data
+ */
 function insertDungeonData(dungeons, dungeonList) {
-  // insert the dungeon data into the html
   for (let i = 0; i < dungeonList.length; i++) {
+    // set background image
+    dungeons[i].style.backgroundImage = setDungeonBackground(dungeonList[i].short_name);
+
     // dungeon name and upgrade level
     dungeons[i].children[0].innerHTML = `${keystoneUpgrade(dungeonList[i].num_keystone_upgrades)}${dungeonList[i].mythic_level} ${dungeonList[i].dungeon}`;
 
@@ -115,6 +125,30 @@ function insertDungeonData(dungeons, dungeonList) {
   }
 }
 
+function setDungeonBackground(name) {
+  switch (name) {
+    case 'YARD':
+    case 'WORK':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/mechagon.jpg)';
+    case 'UPPR':
+    case 'LOWR':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/karazhan.jpg)';
+    case 'GMBT':
+    case 'STRT':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/tazavesh.jpg)';
+    case 'ID':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/irondocks.jpg)';
+    case 'GD':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/grimraildepot.jpg)';
+    default:
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/karazhan.jpg)';
+  }
+}
+
+/**
+ * addDungeonDiv(): creates the keystone-dungeon div
+ *
+ */
 function addDungeonDiv() {
   // create the div
   const keystoneDungeon = document.createElement('div');
@@ -128,11 +162,16 @@ function addDungeonDiv() {
  *
  */
 function deleteDungeonData() {
+  console.log('delete dungeon data');
   dungeons = document.getElementsByClassName('keystone-dungeon');
+  console.log(`Before: ${dungeons.length}`);
+  console.log(dungeons);
 
   for (const dungeon of dungeons) {
+    console.log(`removing ${dungeon}`);
     dungeon.remove();
   }
+  console.log(`After: ${dungeons.length}`);
 }
 
 /**

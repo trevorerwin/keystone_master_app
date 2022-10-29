@@ -5,6 +5,9 @@
 }
 
 /* Data Input Section */
+.data-input-header {
+  text-align: center;
+}
 .data-input-container h2 {
   text-align: center;
 }
@@ -60,7 +63,7 @@
   height: 150px;
   margin-top: 10px;
   margin-bottom: 10px;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('./img/karazhan.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('img/tazavesh.jpg');
   background-size: cover;
   color: #fff;
 }
