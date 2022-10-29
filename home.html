@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WoW Keystone Master Checker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Are you a Keystone Master?</h1>
+
+    <!-- Data Input Section -->
+    <div class="data-input-container">
+      <h2>Enter information</h2>
+      <div class="data-input-values">
+        <label class="region-label" for="region">Region:</label>
+        <select name="region" class="regions data-input-box">
+          <option value="us">us</option>
+          <option value="eu">eu</option>
+          <option value="tw">tw</option>
+          <option value="kr">kr</option>
+          <option value="cn">cn</option>
+        </select>
+        <label class="realm-label" for="realm-text">Realm</label>
+        <input type="text" class="realm-text data-input-box" />
+        <label class="char-label" for="char-text">Character</label>
+        <input type="text" class="char-text data-input-box" />
+        <button class="submit-btn">Submit</button>
+      </div>
+    </div>
+
+    <!-- Data Display Section -->
+    <div class="data-display-container">
+      <!-- Dynamically inserted with JS -->
+      <div class="data-display"></div>
+    </div>
+
+    <!-- Keystone Info Section -->
+    <div class="keystone-info-container">
+      <div class="keystone-info">
+        <h1>Here are your bestns for the season</h1>
+        <!-- Dynamically inserted with JS -->
+        <div class="keystone-best-runs"></div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
