@@ -4,6 +4,17 @@
   padding: 0;
 }
 
+.error-box {
+  color: #ffffff;
+  background-color: #ff8080;
+  display: none;
+  border-radius: 0.5em;
+  border: 1px solid;
+  margin: 10px 0px;
+  padding: 12px;
+  text-align: center;
+}
+
 /* Data Input Section */
 .data-input-header {
   text-align: center;

@@ -14,6 +14,7 @@ const charName = document.querySelector('.char-text');
 const submitBtn = document.querySelector('.submit-btn');
 const keystoneDungeonList = document.querySelector('.keystone-best-runs');
 const keystoneInfoSection = document.querySelector('.keystone-info');
+const errorBox = document.querySelector('.error-box');
 
 /**
  * Event Listeners
@@ -162,16 +163,10 @@ function addDungeonDiv() {
  *
  */
 function deleteDungeonData() {
-  console.log('delete dungeon data');
-  dungeons = document.getElementsByClassName('keystone-dungeon');
-  console.log(`Before: ${dungeons.length}`);
-  console.log(dungeons);
-
-  for (const dungeon of dungeons) {
-    console.log(`removing ${dungeon}`);
-    dungeon.remove();
+  const dungeons = document.getElementsByClassName('keystone-dungeon');
+  while (dungeons.length > 0) {
+    dungeons[0].parentNode.removeChild(dungeons[0]);
   }
-  console.log(`After: ${dungeons.length}`);
 }
 
 /**
@@ -206,7 +201,11 @@ function appendNCopies(n, original, appendTo) {
  * @param {String} msg: Error message to display
  */
 function displayErrorMessage(msg) {
-  console.log(msg);
+  errorBox.innerHTML = msg;
+  errorBox.style.display = 'block';
+  setTimeout(function () {
+    errorBox.style.display = 'none';
+  }, 3000);
 }
 
 /**
