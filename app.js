@@ -14,6 +14,8 @@ const charName = document.querySelector('.char-text');
 const submitBtn = document.querySelector('.submit-btn');
 const keystoneDungeonList = document.querySelector('.keystone-best-runs');
 const keystoneInfoSection = document.querySelector('.keystone-info');
+let keystoneDungeonRuns = document.querySelectorAll('.keystone-dungeon');
+let keystoneDungeonRunsArray = [];
 const errorBox = document.querySelector('.error-box');
 
 /**
@@ -31,9 +33,15 @@ submitBtn.addEventListener('click', () => {
         displayIntro(data);
         deleteDungeonData();
         processDungeonData(data);
+        keystoneDungeonRunsArray = [...keystoneDungeonRuns];
+        console.log(keystoneDungeonRunsArray);
       }
     });
   }
+});
+
+keystoneDungeonList.addEventListener('click', (e) => {
+  console.log(e.classList);
 });
 
 /**
@@ -90,10 +98,10 @@ function processDungeonData(data) {
   appendNCopies(data.mythic_plus_best_runs.length, keystoneDungeon, keystoneDungeonList);
 
   // get all keystone-dungeon elements
-  const dungeons = document.getElementsByClassName('keystone-dungeon');
+  keystoneDungeonRuns = document.getElementsByClassName('keystone-dungeon');
   const bestDungeonRuns = data.mythic_plus_best_runs;
 
-  insertDungeonData(dungeons, bestDungeonRuns);
+  insertDungeonData(keystoneDungeonRuns, bestDungeonRuns);
 }
 
 /**
@@ -163,9 +171,8 @@ function addDungeonDiv() {
  *
  */
 function deleteDungeonData() {
-  const dungeons = document.getElementsByClassName('keystone-dungeon');
-  while (dungeons.length > 0) {
-    dungeons[0].parentNode.removeChild(dungeons[0]);
+  while (keystoneDungeonRuns.length > 0) {
+    keystoneDungeonRuns[0].parentNode.removeChild(keystoneDungeonRuns[0]);
   }
 }
 
