@@ -1,5 +1,5 @@
 /**
- * Variabless
+ * Variables
  */
 const submitBtn = document.querySelector('.submit-btn');
 const keystoneDungeonList = document.querySelector('.keystone-best-runs');
@@ -28,18 +28,18 @@ submitBtn.addEventListener('click', () => {
 });
 
 keystoneDungeonList.addEventListener('click', (e) => {
-  console.log(e);
-  // redirectToRaiderio(e.path[0]);
+  redirectToRaiderio(e.path[0].id);
 });
 
 /**
- * fetchWowData(): Fetches the Promise and resolves to the Response object, *                 and converts it to JSON in order to read the data provided *                 by Raider.io
+ * fetchWowData(): Fetches the Promise, resolves to the Response object, *                 and converts it to JSON in order to read the data provided *                 by Raider.io
  *
  * @param {String} region: the selected region
  * @param {String} realm: realm string
  * @param {String} char: character name string
  *
- * @returns A JSON object containing information pertaining to inputted       character
+ * @returns A JSON object containing information pertaining to inputted
+ *          character
  */
 async function fetchWowData(region, realm, char) {
   const response = await fetch(
@@ -51,7 +51,9 @@ async function fetchWowData(region, realm, char) {
 }
 
 /**
- * displayIntro(): Sets the HTML of dataDisplay to show the character *                 thumbnail, name, mythic plus score, and whether they are *                 currently keystone master or not
+ * displayIntro(): Sets the UI to show the character thumbnail, character
+ *                 name, their mythic+ score, and a message stating whether
+ *                 the player has achieved KSM or not
  *
  * @param {Object} data: JSON object fetched from Raider.io
  */
@@ -73,7 +75,8 @@ function displayIntro(data) {
 }
 
 /**
- * processDungeonData(): Set the HTML of the keystone-best-runs div to show *                       the inputted character's best 8 runs
+ * processDungeonData(): Obtains the JSON data to append the needed divs to
+ *                       keystone-best-runs and update the UI
  *
  * @param {Object} data: JSON object fetched from API
  */
@@ -96,7 +99,9 @@ function processDungeonData(data) {
 }
 
 /**
- * insertDungeonData(): add dungeon data into the UI
+ * insertDungeonData(): Updates the UI to show the players best M+ runs,
+ *                      displaying the dungeon name, keystone level, upgrade
+ *                      level, affixes, time completed, and score
  *
  * @param {Object} dungeons: a list of keystone-dungeon divs
  * @param {Object} dungeonList: JSON object containing the characters mythic+ * data
@@ -127,6 +132,15 @@ function insertDungeonData(dungeons, dungeonList) {
   }
 }
 
+/**
+ * setDungeonBackground(): Sets the background of a keystone-dungeon div with
+ *                         its' appropriate image
+ *
+ * @param {String} name: short-hand name of the specific dungeon
+ *
+ * @return A string of the background image css style with the correct dungeon
+ *         image
+ */
 function setDungeonBackground(name) {
   switch (name) {
     case 'YARD':
@@ -148,8 +162,7 @@ function setDungeonBackground(name) {
 }
 
 /**
- * addDungeonDiv(): creates the keystone-dungeon div
- *
+ * addDungeonDiv(): Creates the keystone-dungeon div
  */
 function addDungeonDiv() {
   // create the div
@@ -161,8 +174,7 @@ function addDungeonDiv() {
 }
 
 /**
- * deleteDungeonData(): deletes the current dungeon data from the UI if any *                      exist
- *
+ * deleteDungeonData(): Deletes the current dungeon data from the UI if any *                      such data exists
  */
 function deleteDungeonData() {
   const keystoneDungeonRuns = document.getElementsByClassName('keystone-dungeon');
@@ -171,14 +183,33 @@ function deleteDungeonData() {
   }
 }
 
-function redirectToRaiderio(target) {}
+/**
+ * redirectToRaiderio(): Opens a webpage of the keystone run the user clicked
+ *                       on
+ *
+ * @param {Object} target: the event object (dungeon div user clicked on)
+ */
+function redirectToRaiderio(target) {
+  const regionList = document.querySelector('.regions');
+  const realm = document.querySelector('.realm-text');
+  const charName = document.querySelector('.char-text');
+  fetchWowData(regionList.value, realm.value, charName.value).then((data) => {
+    for (i = 0; i < data.mythic_plus_best_runs.length; i++) {
+      if (target === `${data.mythic_plus_best_runs[i].short_name}`) {
+        window.open(`${data.mythic_plus_best_runs[i].url}`, '_blank');
+        break;
+      }
+    }
+  });
+}
 
 /**
- * keystoneUpgrade(): determine upgrade level of keystone with '+' symbols
+ * keystoneUpgrade(): Determines the upgrade level of a keystone with '+'
+ *                    symbols
  *
  * @param {Integer} num: keystone upgrade level
  *
- * @return upgrade level as a string of '+' symbols
+ * @return The upgrade level as a string of '+' symbols
  */
 function keystoneUpgrade(num) {
   const keyUpgrade = ['', '+', '++', '+++'];
@@ -186,7 +217,8 @@ function keystoneUpgrade(num) {
 }
 
 /**
- * appendNCopies(): helper function to append nodes to the document - used    *                  for inserting dungeon data
+ * appendNCopies(): Appends nodes to a document element - used for inserting
+ *                  the keystone-dungeon divs into the document
  *
  * @param {Integer} n: number of clones we want
  * @param {Object} original: the node we want to copy
@@ -215,9 +247,9 @@ function displayErrorMessage(msg) {
 }
 
 /**
- * isKeystoneMaster(): Checks if inputted character has KSM already
+ * isKeystoneMaster(): Checks if the inputted character has KSM already
  *
- * @param {Integer} playerRating
+ * @param {Integer} playerRating: the players M+ score
  *
  * @returns true if the playerRating is greater than or equal to 2000, else false
  */
@@ -230,7 +262,7 @@ function isKeystoneMaster(playerRating) {
  *
  * @param {Integer} s: time in miliseconds
  *
- * @returns the time in the specified format above
+ * @returns The time in the specified format above
  */
 function msToTime(s) {
   // Pad to 2 or 3 digits, default is 2
