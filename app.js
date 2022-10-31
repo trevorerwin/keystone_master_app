@@ -1,27 +1,16 @@
 /**
  * Variabless
  */
-
-const dungeonDict = ['YARD', 'STRT', 'GD', 'WORK', 'ID', 'GMBT', 'UPPR', 'LOWR'];
-
-const keystoneCodeBlock =
-  '<h3 class="keystone-dungeon-name"></h3>' + '<h3 class="keystone-dungeon-affixes"></h3>' + '<h3 class="keystone-dungeon-time"></h3>' + '<h3 class="keystone-dungeon-score"></h3>';
-
-const dataDisplay = document.querySelector('.data-display');
-const regionList = document.querySelector('.regions');
-const realm = document.querySelector('.realm-text');
-const charName = document.querySelector('.char-text');
 const submitBtn = document.querySelector('.submit-btn');
 const keystoneDungeonList = document.querySelector('.keystone-best-runs');
-const keystoneInfoSection = document.querySelector('.keystone-info');
-let keystoneDungeonRuns = document.querySelectorAll('.keystone-dungeon');
-let keystoneDungeonRunsArray = [];
-const errorBox = document.querySelector('.error-box');
 
 /**
  * Event Listeners
  */
 submitBtn.addEventListener('click', () => {
+  const regionList = document.querySelector('.regions');
+  const realm = document.querySelector('.realm-text');
+  const charName = document.querySelector('.char-text');
   if (realm.value == '' || charName.value == '') {
     displayErrorMessage('You must fill in all required fields before submitting');
   } else {
@@ -33,15 +22,14 @@ submitBtn.addEventListener('click', () => {
         displayIntro(data);
         deleteDungeonData();
         processDungeonData(data);
-        keystoneDungeonRunsArray = [...keystoneDungeonRuns];
-        console.log(keystoneDungeonRunsArray);
       }
     });
   }
 });
 
 keystoneDungeonList.addEventListener('click', (e) => {
-  console.log(e.classList);
+  console.log(e);
+  // redirectToRaiderio(e.path[0]);
 });
 
 /**
@@ -68,6 +56,7 @@ async function fetchWowData(region, realm, char) {
  * @param {Object} data: JSON object fetched from Raider.io
  */
 function displayIntro(data) {
+  const dataDisplay = document.querySelector('.data-display');
   if (isKeystoneMaster(data.mythic_plus_scores_by_season[0].scores.all)) {
     dataDisplay.innerHTML = `
       <img src="${data.thumbnail_url}"></img>
@@ -94,11 +83,13 @@ function processDungeonData(data) {
 
   // append dungeon divs based on number of dungeons in current season
   // to keystone-best-runs
+  const keystoneInfoSection = document.querySelector('.keystone-info');
   keystoneInfoSection.style.display = 'block';
   appendNCopies(data.mythic_plus_best_runs.length, keystoneDungeon, keystoneDungeonList);
 
   // get all keystone-dungeon elements
-  keystoneDungeonRuns = document.getElementsByClassName('keystone-dungeon');
+  const keystoneDungeonRuns = document.getElementsByClassName('keystone-dungeon');
+
   const bestDungeonRuns = data.mythic_plus_best_runs;
 
   insertDungeonData(keystoneDungeonRuns, bestDungeonRuns);
@@ -112,6 +103,8 @@ function processDungeonData(data) {
  */
 function insertDungeonData(dungeons, dungeonList) {
   for (let i = 0; i < dungeonList.length; i++) {
+    // set id
+    dungeons[i].id = `${dungeonList[i].short_name}`;
     // set background image
     dungeons[i].style.backgroundImage = setDungeonBackground(dungeonList[i].short_name);
 
@@ -162,7 +155,8 @@ function addDungeonDiv() {
   // create the div
   const keystoneDungeon = document.createElement('div');
   keystoneDungeon.className = 'keystone-dungeon';
-  keystoneDungeon.innerHTML = keystoneCodeBlock;
+  keystoneDungeon.innerHTML =
+    '<h3 class="keystone-dungeon-name"></h3>' + '<h3 class="keystone-dungeon-affixes"></h3>' + '<h3 class="keystone-dungeon-time"></h3>' + '<h3 class="keystone-dungeon-score"></h3>';
   return keystoneDungeon;
 }
 
@@ -171,10 +165,13 @@ function addDungeonDiv() {
  *
  */
 function deleteDungeonData() {
+  const keystoneDungeonRuns = document.getElementsByClassName('keystone-dungeon');
   while (keystoneDungeonRuns.length > 0) {
     keystoneDungeonRuns[0].parentNode.removeChild(keystoneDungeonRuns[0]);
   }
 }
+
+function redirectToRaiderio(target) {}
 
 /**
  * keystoneUpgrade(): determine upgrade level of keystone with '+' symbols
@@ -198,6 +195,7 @@ function keystoneUpgrade(num) {
 function appendNCopies(n, original, appendTo) {
   for (let i = 0; i < n; i++) {
     let clone = original.cloneNode(true);
+
     appendTo.appendChild(clone);
   }
 }
@@ -208,6 +206,7 @@ function appendNCopies(n, original, appendTo) {
  * @param {String} msg: Error message to display
  */
 function displayErrorMessage(msg) {
+  const errorBox = document.querySelector('.error-box');
   errorBox.innerHTML = msg;
   errorBox.style.display = 'block';
   setTimeout(function () {
