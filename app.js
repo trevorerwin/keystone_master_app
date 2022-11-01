@@ -2,7 +2,6 @@
  * Variables
  */
 const submitBtn = document.querySelector('.submit-btn');
-const fullDungeonList = document.querySelector('.keystone-runs');
 const fortifiedDungeonList = document.querySelector('.fortified-runs');
 const tyrannicalDungeonList = document.querySelector('.tyrannical-runs');
 
@@ -16,34 +15,55 @@ submitBtn.addEventListener('click', () => {
   if (realm.value == '' || charName.value == '') {
     displayErrorMessage('You must fill in all required fields before submitting');
   } else {
-    fetchWowData(regionList.value, realm.value, charName.value).then((data) => {
-      if (data.statusCode === 400) {
-        displayErrorMessage(data.message);
+    // 8 = Shadowlands ID, will change for Dragonflight
+    fetchStaticDungeonData(8).then((staticData) => {
+      if (staticData.statusCode === 400) {
+        displayErrorMessage(staticData.message);
       } else {
-        console.log(data);
-        displayIntro(data);
-        deleteDungeonData();
-        processDungeonData(data);
+        fetchCharacterData(regionList.value, realm.value, charName.value).then((charData) => {
+          if (charData.statusCode === 400) {
+            displayErrorMessage(charData.message);
+          } else {
+            // console.log(charData);
+            // console.log(staticData);
+            displayIntro(charData);
+            deleteDungeonData();
+            processDungeonData(charData, staticData);
+          }
+        });
       }
     });
   }
 });
 
-fullDungeonList.addEventListener('click', (e) => {
-  redirectToRaiderio(e.path[0].id);
-});
+// fullDungeonList.addEventListener('click', (e) => {
+//   redirectToRaiderio(e.path[0].id);
+// });
 
 /**
- * fetchWowData(): Fetches the Promise, resolves to the Response object, *                 and converts it to JSON in order to read the data provided *                 by Raider.io
+ * fetchStaticDungeonData(): Fetches the Promise, resolves to the Response object, and converts it to JSON in order to read the data provided by Raider.io
+ *
+ * @param {Integer} id: the expansion ID
+ *
+ * @returns A JSON object containing static dungeon data for the current M+ season
+ */
+async function fetchStaticDungeonData(id) {
+  const response = await fetch(`https://raider.io/api/v1/mythic-plus/static-data?expansion_id=${id}`);
+
+  const json = await response.json();
+  return json;
+}
+
+/**
+ * fetchCharacterData(): Fetches the Promise, resolves to the Response object, and converts it to JSON in order to read the data provided by Raider.io
  *
  * @param {String} region: the selected region
  * @param {String} realm: realm string
  * @param {String} char: character name string
  *
- * @returns A JSON object containing information pertaining to inputted
- *          character
+ * @returns A JSON object containing information pertaining to inputted character
  */
-async function fetchWowData(region, realm, char) {
+async function fetchCharacterData(region, realm, char) {
   const response = await fetch(
     `https://raider.io/api/v1/characters/profile?region=${region}&realm=${realm}&name=${char}&fields=mythic_plus_ranks,mythic_plus_scores_by_season:current,mythic_plus_best_runs,mythic_plus_alternate_runs`
   );
@@ -53,9 +73,7 @@ async function fetchWowData(region, realm, char) {
 }
 
 /**
- * displayIntro(): Sets the UI to show the character thumbnail, character
- *                 name, their mythic+ score, and a message stating whether
- *                 the player has achieved KSM or not
+ * displayIntro(): Sets the UI to show the character thumbnail, character name, their mythic+ score, and a message stating whether the player has achieved KSM or not
  *
  * @param {Object} data: JSON object fetched from Raider.io
  */
@@ -77,48 +95,64 @@ function displayIntro(data) {
 }
 
 /**
- * processDungeonData(): Obtains the JSON data to append the needed divs to
- *                       keystone-best-runs and update the UI
+ * processDungeonData(): Obtains the JSON data to append the needed divs to keystone-best-runs and update the UI
  *
- * @param {Object} data: JSON object fetched from API
+ * @param {Object} charData: JSON object fetched from API
+ * @param {Object} staticData: JSON object fetched from API
  */
-function processDungeonData(data) {
+function processDungeonData(charData, staticData) {
   // create a keystone-dungeon div
-  const keystoneDungeon = addDungeonDiv();
+  const keystoneDungeon = createDungeonDiv();
 
   // show the keystone info section
   const keystoneInfoSection = document.querySelector('.keystone-info');
   keystoneInfoSection.style.display = 'block';
 
-  // get the fortified and tyrannical dungeons
-  const bestRuns = data.mythic_plus_best_runs;
-  const alternateRuns = data.mythic_plus_alternate_runs;
-  const allRuns = bestRuns.concat(alternateRuns);
-  console.log(allRuns);
-  // const tyrannicalRuns = getDungeonsByAffix(allRuns);
-  // const fortifiedRuns = getDungeonsByAffix(allRuns);
-
-  appendNCopies(allRuns.length, keystoneDungeon, fullDungeonList);
+  // append divs to fortified-runs and tyrannical-runs
+  const fortifiedList = document.querySelector('.fortified-runs');
+  const tyrannicalList = document.querySelector('.tyrannical-runs');
+  appendDivCopies(staticData, keystoneDungeon, fortifiedList, 'F');
+  appendDivCopies(staticData, keystoneDungeon, tyrannicalList, 'T');
 
   // get all keystone-dungeon elements
-  const keystoneDungeonDivs = document.getElementsByClassName('keystone-dungeon');
+  const keystoneDungeonDivsFort = document.getElementsByClassName('keystone-dungeon-fortified');
+  const keystoneDungeonDivsTyran = document.getElementsByClassName('keystone-dungeon-tyrannical');
 
-  insertDungeonData(keystoneDungeonDivs, allRuns);
+  const bestRuns = charData.mythic_plus_best_runs;
+  const alternateRuns = charData.mythic_plus_alternate_runs;
+
+  testInsert(keystoneDungeonDivsFort, bestRuns);
+  // testInsert(keystoneDungeonDivsFort, alternateRuns)
+  // insertDungeonData(keystoneDungeonDivs, bestRuns);
+}
+
+function testInsert(dungeons, dungeonList) {
+  for (let i = 0; i < dungeons.length; i++) {
+    console.log(dungeonList);
+    console.log(`The ID we are looking for is: ${dungeons[i].id}`);
+    for (let j = 0; j < dungeonList.length; j++) {
+      let text = dungeonList[j].affixes[0].name;
+      let idString = `${dungeonList[j].short_name}-${text.charAt(0)}`;
+      console.log('j loop');
+      console.log(idString);
+      console.log(dungeons[i].id);
+      if (dungeons[i].id === idString) {
+        console.log('MATCH!!');
+        dungeonList.splice(j, 1);
+        break;
+      }
+    }
+  }
 }
 
 /**
- * insertDungeonData(): Updates the UI to show the players best M+ runs,
- *                      displaying the dungeon name, keystone level, upgrade
- *                      level, affixes, time completed, and score
+ * insertDungeonData(): Updates the UI to show the players best M+ runs, displaying the dungeon name, keystone level, upgrade level, affixes, time completed, and score
  *
  * @param {Object} dungeons: a list of keystone-dungeon divs
  * @param {Object} dungeonList: JSON object containing the characters mythic+ * data
  */
 function insertDungeonData(dungeons, dungeonList) {
   for (let i = 0; i < dungeonList.length; i++) {
-    // set id
-    console.log(dungeons[i].id);
-    dungeons[i].id = `${dungeonList[i].short_name}`;
     // set background image
     dungeons[i].style.backgroundImage = setDungeonBackground(dungeonList[i].short_name);
 
@@ -142,13 +176,11 @@ function insertDungeonData(dungeons, dungeonList) {
 }
 
 /**
- * setDungeonBackground(): Sets the background of a keystone-dungeon div with
- *                         its' appropriate image
+ * setDungeonBackground(): Sets the background of a keystone-dungeon div with its' appropriate image
  *
  * @param {String} name: short-hand name of the specific dungeon
  *
- * @return A string of the background image css style with the correct dungeon
- *         image
+ * @return A string of the background image css style with the correct dungeon image
  */
 function setDungeonBackground(name) {
   switch (name) {
@@ -173,7 +205,7 @@ function setDungeonBackground(name) {
 /**
  * addDungeonDiv(): Creates the keystone-dungeon div
  */
-function addDungeonDiv() {
+function createDungeonDiv() {
   // create the div
   const keystoneDungeon = document.createElement('div');
   keystoneDungeon.className = 'keystone-dungeon';
@@ -183,7 +215,7 @@ function addDungeonDiv() {
 }
 
 /**
- * deleteDungeonData(): Deletes the current dungeon data from the UI if any *                      such data exists
+ * deleteDungeonData(): Deletes the current dungeon data from the UI if any such data exists
  */
 function deleteDungeonData() {
   const keystoneDungeonDivs = document.getElementsByClassName('keystone-dungeon');
@@ -193,28 +225,26 @@ function deleteDungeonData() {
 }
 
 /**
- * redirectToRaiderio(): Opens a webpage of the keystone run the user clicked
- *                       on
+ * redirectToRaiderio(): Opens a webpage of the keystone run the user clicked on
  *
  * @param {Object} target: the event object (dungeon div user clicked on)
  */
-function redirectToRaiderio(target) {
-  const regionList = document.querySelector('.regions');
-  const realm = document.querySelector('.realm-text');
-  const charName = document.querySelector('.char-text');
-  fetchWowData(regionList.value, realm.value, charName.value).then((data) => {
-    for (i = 0; i < data.mythic_plus_best_runs.length; i++) {
-      if (target === `${data.mythic_plus_best_runs[i].short_name}`) {
-        window.open(`${data.mythic_plus_best_runs[i].url}`, '_blank');
-        break;
-      }
-    }
-  });
-}
+// function redirectToRaiderio(target) {
+//   const regionList = document.querySelector('.regions');
+//   const realm = document.querySelector('.realm-text');
+//   const charName = document.querySelector('.char-text');
+//   fetchCharacterData(regionList.value, realm.value, charName.value).then((data) => {
+//     for (i = 0; i < data.mythic_plus_best_runs.length; i++) {
+//       if (target === `${data.mythic_plus_best_runs[i].short_name}`) {
+//         window.open(`${data.mythic_plus_best_runs[i].url}`, '_blank');
+//         break;
+//       }
+//     }
+//   });
+// }
 
 /**
- * keystoneUpgrade(): Determines the upgrade level of a keystone with '+'
- *                    symbols
+ * keystoneUpgrade(): Determines the upgrade level of a keystone with '+'symbols
  *
  * @param {Integer} num: keystone upgrade level
  *
@@ -226,17 +256,19 @@ function keystoneUpgrade(num) {
 }
 
 /**
- * appendNCopies(): Appends nodes to a document element - used for inserting
- *                  the keystone-dungeon divs into the document
+ * appendNCopies(): Appends nodes to a document element - used for inserting the keystone-dungeon divs into the document
  *
- * @param {Integer} n: number of clones we want
+ * @param {Object} data: our static dungeon data
  * @param {Object} original: the node we want to copy
  * @param {Object} appendTo: the node we want to append to
+ * @param {String} affix: the fortified/tyrannical affix char(F or T)
  */
-function appendNCopies(n, original, appendTo) {
-  for (let i = 0; i < n; i++) {
+function appendDivCopies(data, original, appendTo, affix) {
+  for (let i = 0; i < data.seasons[0].dungeons.length; i++) {
     let clone = original.cloneNode(true);
-
+    if (affix === 'F') clone.className += ' keystone-dungeon-fortified';
+    else clone.className += ' keystone-dungeon-tyrannical';
+    clone.id = `${data.seasons[0].dungeons[i].short_name}-${affix}`;
     appendTo.appendChild(clone);
   }
 }
