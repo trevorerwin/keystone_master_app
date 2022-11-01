@@ -114,35 +114,31 @@ function processDungeonData(charData, staticData) {
   appendDivCopies(staticData, keystoneDungeon, fortifiedList, 'F');
   appendDivCopies(staticData, keystoneDungeon, tyrannicalList, 'T');
 
+  // sort the dungeons by affix
+  const tyrannicalRuns = sortDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Tyrannical');
+  const fortifiedRuns = sortDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Fortified');
+
   // get all keystone-dungeon elements
   const keystoneDungeonDivsFort = document.getElementsByClassName('keystone-dungeon-fortified');
   const keystoneDungeonDivsTyran = document.getElementsByClassName('keystone-dungeon-tyrannical');
 
-  const bestRuns = charData.mythic_plus_best_runs;
-  const alternateRuns = charData.mythic_plus_alternate_runs;
+  // insert the data into the UI
 
-  testInsert(keystoneDungeonDivsFort, bestRuns);
-  // testInsert(keystoneDungeonDivsFort, alternateRuns)
-  // insertDungeonData(keystoneDungeonDivs, bestRuns);
+  insertDungeonData(keystoneDungeonDivsFort, fortifiedRuns);
+
+  insertDungeonData(keystoneDungeonDivsTyran, tyrannicalRuns);
 }
 
-function testInsert(dungeons, dungeonList) {
-  for (let i = 0; i < dungeons.length; i++) {
-    console.log(dungeonList);
-    console.log(`The ID we are looking for is: ${dungeons[i].id}`);
-    for (let j = 0; j < dungeonList.length; j++) {
-      let text = dungeonList[j].affixes[0].name;
-      let idString = `${dungeonList[j].short_name}-${text.charAt(0)}`;
-      console.log('j loop');
-      console.log(idString);
-      console.log(dungeons[i].id);
-      if (dungeons[i].id === idString) {
-        console.log('MATCH!!');
-        dungeonList.splice(j, 1);
-        break;
-      }
+function sortDungeonByAffix(dungeonList, affix) {
+  const result = dungeonList.filter((item) => {
+    if (item.affixes[0].name === affix) {
+      return true;
+    } else {
+      return false;
     }
-  }
+  });
+
+  return result;
 }
 
 /**
@@ -152,26 +148,31 @@ function testInsert(dungeons, dungeonList) {
  * @param {Object} dungeonList: JSON object containing the characters mythic+ * data
  */
 function insertDungeonData(dungeons, dungeonList) {
-  for (let i = 0; i < dungeonList.length; i++) {
-    // set background image
-    dungeons[i].style.backgroundImage = setDungeonBackground(dungeonList[i].short_name);
+  for (let i = 0; i < dungeons.length; i++) {
+    for (let j = 0; j < dungeonList.length; j++) {
+      if (dungeonList[j].short_name === dungeons[i].id.substring(0, dungeons[i].id.lastIndexOf('-'))) {
+        // dungeon name and upgrade level
+        dungeons[i].children[0].innerHTML = `${keystoneUpgrade(dungeonList[j].num_keystone_upgrades)}${dungeonList[j].mythic_level} ${dungeonList[j].dungeon}`;
 
-    // dungeon name and upgrade level
-    dungeons[i].children[0].innerHTML = `${keystoneUpgrade(dungeonList[i].num_keystone_upgrades)}${dungeonList[i].mythic_level} ${dungeonList[i].dungeon}`;
+        // affixes
+        dungeons[i].children[1].innerHTML = `${dungeonList[j].affixes[0].name}, ${dungeonList[j].affixes[1].name}, ${dungeonList[j].affixes[2].name}, ${dungeonList[j].affixes[3].name}`;
 
-    // affixes
-    dungeons[i].children[1].innerHTML = `${dungeonList[i].affixes[0].name}, ${dungeonList[i].affixes[1].name}, ${dungeonList[i].affixes[2].name}, ${dungeonList[i].affixes[3].name}`;
+        // clear time
+        // add indication in UI if keystone was over time
+        if (dungeonList[j].clear_time_ms < dungeonList[j].par_time_ms) {
+          dungeons[i].children[2].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)}`;
+        } else {
+          dungeons[i].children[2].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)} (over time)`;
+        }
 
-    // clear time
-    // add indication in UI if keystone was over time
-    if (dungeonList[i].clear_time_ms < dungeonList[i].par_time_ms) {
-      dungeons[i].children[2].innerHTML = `Time: ${msToTime(dungeonList[i].clear_time_ms)}`;
-    } else {
-      dungeons[i].children[2].innerHTML = `Time: ${msToTime(dungeonList[i].clear_time_ms)} (over time)`;
+        // score
+        dungeons[i].children[3].innerHTML = `Score: ${dungeonList[j].score}`;
+      }
     }
-
-    // score
-    dungeons[i].children[3].innerHTML = `Score: ${dungeonList[i].score}`;
+    // check if div is still empty
+    if (dungeons[i].children[0].innerHTML === '') {
+      dungeons[i].children[0].innerHTML = 'Incomplete';
+    }
   }
 }
 
@@ -265,11 +266,23 @@ function keystoneUpgrade(num) {
  */
 function appendDivCopies(data, original, appendTo, affix) {
   for (let i = 0; i < data.seasons[0].dungeons.length; i++) {
+    // clone the node
     let clone = original.cloneNode(true);
-    if (affix === 'F') clone.className += ' keystone-dungeon-fortified';
-    else clone.className += ' keystone-dungeon-tyrannical';
+
+    // check the affix and add respective class
+    if (affix === 'F') {
+      clone.className += ' keystone-dungeon-fortified';
+    } else {
+      clone.className += ' keystone-dungeon-tyrannical';
+    }
+
+    // set id and background
     clone.id = `${data.seasons[0].dungeons[i].short_name}-${affix}`;
+    clone.style.backgroundImage = setDungeonBackground(data.seasons[0].dungeons[i].short_name);
+
     appendTo.appendChild(clone);
+
+    // dungeons[i].style.backgroundImage = setDungeonBackground(dungeonList[i].short_name);
   }
 }
 
