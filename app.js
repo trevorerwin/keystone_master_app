@@ -2,7 +2,9 @@
  * Variables
  */
 const submitBtn = document.querySelector('.submit-btn');
-const keystoneDungeonList = document.querySelector('.keystone-best-runs');
+const fullDungeonList = document.querySelector('.keystone-runs');
+const fortifiedDungeonList = document.querySelector('.fortified-runs');
+const tyrannicalDungeonList = document.querySelector('.tyrannical-runs');
 
 /**
  * Event Listeners
@@ -27,7 +29,7 @@ submitBtn.addEventListener('click', () => {
   }
 });
 
-keystoneDungeonList.addEventListener('click', (e) => {
+fullDungeonList.addEventListener('click', (e) => {
   redirectToRaiderio(e.path[0].id);
 });
 
@@ -43,7 +45,7 @@ keystoneDungeonList.addEventListener('click', (e) => {
  */
 async function fetchWowData(region, realm, char) {
   const response = await fetch(
-    `https://raider.io/api/v1/characters/profile?region=${region}&realm=${realm}&name=${char}&fields=mythic_plus_ranks,mythic_plus_scores_by_season:current,mythic_plus_best_runs`
+    `https://raider.io/api/v1/characters/profile?region=${region}&realm=${realm}&name=${char}&fields=mythic_plus_ranks,mythic_plus_scores_by_season:current,mythic_plus_best_runs,mythic_plus_alternate_runs`
   );
 
   const json = await response.json();
@@ -84,18 +86,24 @@ function processDungeonData(data) {
   // create a keystone-dungeon div
   const keystoneDungeon = addDungeonDiv();
 
-  // append dungeon divs based on number of dungeons in current season
-  // to keystone-best-runs
+  // show the keystone info section
   const keystoneInfoSection = document.querySelector('.keystone-info');
   keystoneInfoSection.style.display = 'block';
-  appendNCopies(data.mythic_plus_best_runs.length, keystoneDungeon, keystoneDungeonList);
+
+  // get the fortified and tyrannical dungeons
+  const bestRuns = data.mythic_plus_best_runs;
+  const alternateRuns = data.mythic_plus_alternate_runs;
+  const allRuns = bestRuns.concat(alternateRuns);
+  console.log(allRuns);
+  // const tyrannicalRuns = getDungeonsByAffix(allRuns);
+  // const fortifiedRuns = getDungeonsByAffix(allRuns);
+
+  appendNCopies(allRuns.length, keystoneDungeon, fullDungeonList);
 
   // get all keystone-dungeon elements
-  const keystoneDungeonRuns = document.getElementsByClassName('keystone-dungeon');
+  const keystoneDungeonDivs = document.getElementsByClassName('keystone-dungeon');
 
-  const bestDungeonRuns = data.mythic_plus_best_runs;
-
-  insertDungeonData(keystoneDungeonRuns, bestDungeonRuns);
+  insertDungeonData(keystoneDungeonDivs, allRuns);
 }
 
 /**
@@ -109,6 +117,7 @@ function processDungeonData(data) {
 function insertDungeonData(dungeons, dungeonList) {
   for (let i = 0; i < dungeonList.length; i++) {
     // set id
+    console.log(dungeons[i].id);
     dungeons[i].id = `${dungeonList[i].short_name}`;
     // set background image
     dungeons[i].style.backgroundImage = setDungeonBackground(dungeonList[i].short_name);
@@ -177,9 +186,9 @@ function addDungeonDiv() {
  * deleteDungeonData(): Deletes the current dungeon data from the UI if any *                      such data exists
  */
 function deleteDungeonData() {
-  const keystoneDungeonRuns = document.getElementsByClassName('keystone-dungeon');
-  while (keystoneDungeonRuns.length > 0) {
-    keystoneDungeonRuns[0].parentNode.removeChild(keystoneDungeonRuns[0]);
+  const keystoneDungeonDivs = document.getElementsByClassName('keystone-dungeon');
+  while (keystoneDungeonDivs.length > 0) {
+    keystoneDungeonDivs[0].parentNode.removeChild(keystoneDungeonDivs[0]);
   }
 }
 
