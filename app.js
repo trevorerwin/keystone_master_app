@@ -4,6 +4,7 @@
 const submitBtn = document.querySelector('.submit-btn');
 const fortifiedDungeonList = document.querySelector('.fortified-runs');
 const tyrannicalDungeonList = document.querySelector('.tyrannical-runs');
+const allDungeonList = document.querySelector('.keystone-runs');
 
 /**
  * Event Listeners
@@ -24,7 +25,6 @@ submitBtn.addEventListener('click', () => {
           if (charData.statusCode === 400) {
             displayErrorMessage(charData.message);
           } else {
-            // console.log(charData);
             // console.log(staticData);
             displayIntro(charData);
             deleteDungeonData();
@@ -36,9 +36,9 @@ submitBtn.addEventListener('click', () => {
   }
 });
 
-// fullDungeonList.addEventListener('click', (e) => {
-//   redirectToRaiderio(e.path[0].id);
-// });
+allDungeonList.addEventListener('click', (e) => {
+  redirectToRaiderio(e.path[0].id);
+});
 
 /**
  * fetchStaticDungeonData(): Fetches the Promise, resolves to the Response object, and converts it to JSON in order to read the data provided by Raider.io
@@ -230,19 +230,33 @@ function deleteDungeonData() {
  *
  * @param {Object} target: the event object (dungeon div user clicked on)
  */
-// function redirectToRaiderio(target) {
-//   const regionList = document.querySelector('.regions');
-//   const realm = document.querySelector('.realm-text');
-//   const charName = document.querySelector('.char-text');
-//   fetchCharacterData(regionList.value, realm.value, charName.value).then((data) => {
-//     for (i = 0; i < data.mythic_plus_best_runs.length; i++) {
-//       if (target === `${data.mythic_plus_best_runs[i].short_name}`) {
-//         window.open(`${data.mythic_plus_best_runs[i].url}`, '_blank');
-//         break;
-//       }
-//     }
-//   });
-// }
+function redirectToRaiderio(target) {
+  const regionList = document.querySelector('.regions');
+  const realm = document.querySelector('.realm-text');
+  const charName = document.querySelector('.char-text');
+  const dungeonName = target.substring(0, target.lastIndexOf('-'));
+  const affix = target.charAt(target.length - 1);
+
+  fetchCharacterData(regionList.value, realm.value, charName.value).then((data) => {
+    const fullData = data.mythic_plus_best_runs.concat(data.mythic_plus_alternate_runs);
+
+    if (affix === 'F') {
+      const targetDiv = fullData.filter((item) => {
+        return item.short_name === dungeonName && item.affixes[0].name === 'Fortified';
+      });
+      if (Array.isArray(targetDiv) && targetDiv.length) {
+        window.open(`${targetDiv[0].url}`, '_blank');
+      }
+    } else {
+      const targetDiv = fullData.filter((item) => {
+        return item.short_name === dungeonName && item.affixes[0].name === 'Tyrannical';
+      });
+      if (Array.isArray(targetDiv) && targetDiv.length) {
+        window.open(`${targetDiv[0].url}`, '_blank');
+      }
+    }
+  });
+}
 
 /**
  * keystoneUpgrade(): Determines the upgrade level of a keystone with '+'symbols
