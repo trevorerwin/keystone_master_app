@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Dosis', sans-serif;
-  background: #191b1d;
+  background: #2d3147;
   color: #fbfaf5;
 }
 
@@ -22,6 +22,10 @@ body {
 }
 
 /* Data Input Section */
+
+.data-input-container {
+  margin-top: 64px;
+}
 .data-input-header {
   text-align: center;
 }
@@ -91,8 +95,26 @@ body {
 
 /* Data Display Section */
 .data-display {
+  display: grid;
   text-align: center;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-template-areas: 'char-results keystone-text';
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
+
+.char-results {
+  grid-area: char-results;
+}
+
+.keystone-text {
+  grid-area: keystone-text;
+}
+
 /* Keystone Info Section */
 .keystone-info {
   display: none;
@@ -103,7 +125,7 @@ body {
 }
 
 .fortified-runs h2,
-.tryannical-runs h2 {
+.tyrannical-runs h2 {
   text-align: center;
 }
 
@@ -119,5 +141,7 @@ body {
   background-size: cover;
   border-radius: 5px;
   color: #fff;
+  font-size: 11px;
+  letter-spacing: 2px;
   transition: background-image 0.2s;
 }

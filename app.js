@@ -25,7 +25,7 @@ submitBtn.addEventListener('click', () => {
           if (charData.statusCode === 400) {
             displayErrorMessage(charData.message);
           } else {
-            // console.log(staticData);
+            console.log(charData);
             displayIntro(charData);
             deleteDungeonData();
             processDungeonData(charData, staticData);
@@ -81,16 +81,24 @@ function displayIntro(data) {
   const dataDisplay = document.querySelector('.data-display');
   if (isKeystoneMaster(data.mythic_plus_scores_by_season[0].scores.all)) {
     dataDisplay.innerHTML = `
+    <div class="char-results">
       <img src="${data.thumbnail_url}"></img>
       <h4>${data.name}</h4>
-      <h4>Mythic+ Score: ${data.mythic_plus_scores_by_season[0].scores.all}</h4>
-      <h2>You are a <span class="keystone-master-text" style="color: ${data.mythic_plus_scores_by_season[0].segments.all.color}">Keystone Master</span>!</h2>`;
+      <h4>Mythic+ Score: <span class="mythic-score-text" style="color: ${data.mythic_plus_scores_by_season[0].segments.all.color}">${data.mythic_plus_scores_by_season[0].scores.all}</span></h4>
+    </div>
+    <div class="char-mythic-text">
+      <h2>You are a <span class="keystone-master-text" style="color: ${data.mythic_plus_scores_by_season[0].segments.all.color}">Keystone Master</span>!</h2>
+    </div>`;
   } else {
     dataDisplay.innerHTML = `
+    <div class="char-results">
       <img src="${data.thumbnail_url}"></img>
       <h4>${data.name}</h4>
-      <h4>Mythic+ Score: ${data.mythic_plus_scores_by_season[0].scores.all}</h4>
-      <h2>Oof... You're not quite a Keystone Master just yet.</h2>`;
+      <h4>Mythic+ Score: <span class="mythic-score-text" style="color: ${data.mythic_plus_scores_by_season[0].segments.all.color}">${data.mythic_plus_scores_by_season[0].scores.all}</span></h4>
+    </div>
+    <div class="char-mythic-text">
+      <h2>You're not quite a Keystone Master just yet. See what keys you need done below</h2>
+    </div>`;
   }
 }
 
@@ -115,21 +123,27 @@ function processDungeonData(charData, staticData) {
   appendDivCopies(staticData, keystoneDungeon, tyrannicalList, 'T');
 
   // sort the dungeons by affix
-  const tyrannicalRuns = sortDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Tyrannical');
-  const fortifiedRuns = sortDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Fortified');
+  const tyrannicalRuns = filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Tyrannical');
+  const fortifiedRuns = filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Fortified');
 
   // get all keystone-dungeon elements
   const keystoneDungeonDivsFort = document.getElementsByClassName('keystone-dungeon-fortified');
   const keystoneDungeonDivsTyran = document.getElementsByClassName('keystone-dungeon-tyrannical');
 
   // insert the data into the UI
-
   insertDungeonData(keystoneDungeonDivsFort, fortifiedRuns);
-
   insertDungeonData(keystoneDungeonDivsTyran, tyrannicalRuns);
 }
 
-function sortDungeonByAffix(dungeonList, affix) {
+/**
+ * sortDungeonByAffix(): filters the JSON data to only contain dungeons that include a specific affix
+ *
+ * @param {Object} dungeonList: JSON object fetched from API
+ * @param {String} affix: the affix we want to filter by
+ *
+ * @return a JSON object containing only the dungeons with the filtered affix
+ */
+function filterDungeonByAffix(dungeonList, affix) {
   const result = dungeonList.filter((item) => {
     if (item.affixes[0].name === affix) {
       return true;
