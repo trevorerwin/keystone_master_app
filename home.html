@@ -6,22 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WoW Keystone Master Checker</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div class="error-box"></div>
     <!-- Data Input Section -->
     <div class="data-input-container">
-      <h1 class="data-input-header">Are you a Keystone Master?</h1>
+      <h1 class="data-input-header">ARE YOU A KEYSTONE MASTER?</h1>
       <h2>Enter information</h2>
       <div class="data-input-values">
-        <label class="region-label" for="region">Region:</label>
-        <select name="region" class="regions data-input-box">
-          <option value="us">us</option>
-          <option value="eu">eu</option>
-          <option value="tw">tw</option>
-          <option value="kr">kr</option>
-          <option value="cn">cn</option>
-        </select>
+        <div class="region-dropdown">
+          <label class="region-label" for="region">Region:</label>
+          <select name="region" class="regions">
+            <option value="us">us</option>
+            <option value="eu">eu</option>
+            <option value="tw">tw</option>
+            <option value="kr">kr</option>
+            <option value="cn">cn</option>
+          </select>
+        </div>
         <label class="realm-label" for="realm-text">Realm</label>
         <input type="text" class="realm-text data-input-box" />
         <label class="char-label" for="char-text">Character</label>

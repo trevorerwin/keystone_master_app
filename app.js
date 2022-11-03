@@ -187,7 +187,7 @@ function setDungeonBackground(name) {
   switch (name) {
     case 'YARD':
     case 'WORK':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/mechagon.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/mechagon.jpg)';
     case 'UPPR':
     case 'LOWR':
       return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/karazhan.jpg)';
