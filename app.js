@@ -29,6 +29,9 @@ submitBtn.addEventListener('click', () => {
             displayIntro(charData);
             deleteDungeonData();
             processDungeonData(charData, staticData);
+            if (!isKeystoneMaster(charData.mythic_plus_scores_by_season[0].scores.all)) {
+              recommendDungeonToImprove(fortifiedDungeonList, tyrannicalDungeonList);
+            }
           }
         });
       }
@@ -102,27 +105,26 @@ function displayIntro(data) {
   }
 }
 
-/**
- * Computing the Dungeon Rating
- *
- * - first 10 levels = {0,40,45,55,60,65,75,80,85,100}
- * - add +5 per key level after
- * - negate
- *
- *
- * threshold = 0.4
- * bonus = 5
- * Formula
- * - par time fraction (ptf) = clear(ms)/par(ms)
- * - offset = 1 - ptf
- * - if(ptf > 0.4) return bonus
- * - elif(ptf > 0) return (ptf * bonus / threshold)
- * - elif(ptf=0) return 0
- * - elif(ptf > -threshold) return (ptf * bonus / threshold - bonus)
- * - else return null
- *
- *
- */
+function recommendDungeonToImprove(fortifiedDungeons, tyrannicalDungeons) {
+  console.log(fortifiedDungeons.children);
+  console.log(tyrannicalDungeons);
+  const fortChildren = fortifiedDungeons.children;
+  const tyranChildren = tyrannicalDungeons.children;
+  for (let i = 0; i < fortChildren.length; i++) {
+    // if (fortChildren[i].children[0].innerHTML === 'Incomplete') {
+    //   console.log(`recommend ${fortChildren[i].id}`);
+    // }
+
+    const str = fortChildren[i].children[3].innerHTML;
+    const res = str.replace(/\D/g, '');
+    console.log(res);
+  }
+  for (let i = 0; i < tyranChildren.length; i++) {
+    if (tyranChildren[i].children[0].innerHTML === 'Incomplete') {
+      console.log(`recommend ${tyranChildren[i].id}`);
+    }
+  }
+}
 
 /**
  * processDungeonData(): Obtains the JSON data to append the needed divs to keystone-best-runs and update the UI
