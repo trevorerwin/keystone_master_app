@@ -14,26 +14,37 @@ submitBtn.addEventListener('click', () => {
   const realm = document.querySelector('.realm-text');
   const charName = document.querySelector('.char-text');
   if (realm.value == '' || charName.value == '') {
-    displayErrorMessage('You must fill in all required fields before submitting');
+    displayErrorMessage(
+      'You must fill in all required fields before submitting'
+    );
   } else {
     // 8 = Shadowlands ID, will change for Dragonflight
     fetchStaticDungeonData(8).then((staticData) => {
       if (staticData.statusCode === 400) {
         displayErrorMessage(staticData.message);
       } else {
-        fetchCharacterData(regionList.value, realm.value, charName.value).then((charData) => {
-          if (charData.statusCode === 400) {
-            displayErrorMessage(charData.message);
-          } else {
-            console.log(charData);
-            displayIntro(charData);
-            deleteDungeonData();
-            processDungeonData(charData, staticData);
-            if (!isKeystoneMaster(charData.mythic_plus_scores_by_season[0].scores.all)) {
-              recommendDungeonToImprove(fortifiedDungeonList, tyrannicalDungeonList);
+        fetchCharacterData(regionList.value, realm.value, charName.value).then(
+          (charData) => {
+            if (charData.statusCode === 400) {
+              displayErrorMessage(charData.message);
+            } else {
+              console.log(charData);
+              displayIntro(charData);
+              deleteDungeonData();
+              processDungeonData(charData, staticData);
+              if (
+                !isKeystoneMaster(
+                  charData.mythic_plus_scores_by_season[0].scores.all
+                )
+              ) {
+                recommendDungeonToImprove(
+                  fortifiedDungeonList,
+                  tyrannicalDungeonList
+                );
+              }
             }
           }
-        });
+        );
       }
     });
   }
@@ -51,7 +62,9 @@ allDungeonList.addEventListener('click', (e) => {
  * @returns A JSON object containing static dungeon data for the current M+ season
  */
 async function fetchStaticDungeonData(id) {
-  const response = await fetch(`https://raider.io/api/v1/mythic-plus/static-data?expansion_id=${id}`);
+  const response = await fetch(
+    `https://raider.io/api/v1/mythic-plus/static-data?expansion_id=${id}`
+  );
 
   const json = await response.json();
   return json;
@@ -106,21 +119,19 @@ function displayIntro(data) {
 }
 
 function recommendDungeonToImprove(fortifiedDungeons, tyrannicalDungeons) {
-  console.log(fortifiedDungeons.children);
-  console.log(tyrannicalDungeons);
   const fortChildren = fortifiedDungeons.children;
   const tyranChildren = tyrannicalDungeons.children;
   for (let i = 0; i < fortChildren.length; i++) {
-    // if (fortChildren[i].children[0].innerHTML === 'Incomplete') {
-    //   console.log(`recommend ${fortChildren[i].id}`);
-    // }
-
     const str = fortChildren[i].children[3].innerHTML;
-    const res = str.replace(/\D/g, '');
-    console.log(res);
+    const score = Number(str.replace(/[^0-9\.]+/g, ''));
+    if (score < 125) {
+      console.log(`recommend ${fortChildren[i].id}`);
+    }
   }
   for (let i = 0; i < tyranChildren.length; i++) {
-    if (tyranChildren[i].children[0].innerHTML === 'Incomplete') {
+    const str = tyranChildren[i].children[3].innerHTML;
+    const score = Number(str.replace(/[^0-9\.]+/g, ''));
+    if (score < 125) {
       console.log(`recommend ${tyranChildren[i].id}`);
     }
   }
@@ -147,12 +158,22 @@ function processDungeonData(charData, staticData) {
   appendDivCopies(staticData, keystoneDungeon, tyrannicalList, 'T');
 
   // sort the dungeons by affix
-  const tyrannicalRuns = filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Tyrannical');
-  const fortifiedRuns = filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Fortified');
+  const tyrannicalRuns = filterDungeonByAffix(
+    charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs),
+    'Tyrannical'
+  );
+  const fortifiedRuns = filterDungeonByAffix(
+    charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs),
+    'Fortified'
+  );
 
   // get all keystone-dungeon elements
-  const keystoneDungeonDivsFort = document.getElementsByClassName('keystone-dungeon-fortified');
-  const keystoneDungeonDivsTyran = document.getElementsByClassName('keystone-dungeon-tyrannical');
+  const keystoneDungeonDivsFort = document.getElementsByClassName(
+    'keystone-dungeon-fortified'
+  );
+  const keystoneDungeonDivsTyran = document.getElementsByClassName(
+    'keystone-dungeon-tyrannical'
+  );
 
   // insert the data into the UI
   insertDungeonData(keystoneDungeonDivsFort, fortifiedRuns);
@@ -188,19 +209,30 @@ function filterDungeonByAffix(dungeonList, affix) {
 function insertDungeonData(dungeons, dungeonList) {
   for (let i = 0; i < dungeons.length; i++) {
     for (let j = 0; j < dungeonList.length; j++) {
-      if (dungeonList[j].short_name === dungeons[i].id.substring(0, dungeons[i].id.lastIndexOf('-'))) {
+      if (
+        dungeonList[j].short_name ===
+        dungeons[i].id.substring(0, dungeons[i].id.lastIndexOf('-'))
+      ) {
         // dungeon name and upgrade level
-        dungeons[i].children[0].innerHTML = `${keystoneUpgrade(dungeonList[j].num_keystone_upgrades)}${dungeonList[j].mythic_level} ${dungeonList[j].dungeon}`;
+        dungeons[i].children[0].innerHTML = `${keystoneUpgrade(
+          dungeonList[j].num_keystone_upgrades
+        )}${dungeonList[j].mythic_level} ${dungeonList[j].dungeon}`;
 
         // affixes
-        dungeons[i].children[1].innerHTML = `${dungeonList[j].affixes[0].name}, ${dungeonList[j].affixes[1].name}, ${dungeonList[j].affixes[2].name}, ${dungeonList[j].affixes[3].name}`;
+        dungeons[
+          i
+        ].children[1].innerHTML = `${dungeonList[j].affixes[0].name}, ${dungeonList[j].affixes[1].name}, ${dungeonList[j].affixes[2].name}, ${dungeonList[j].affixes[3].name}`;
 
         // clear time
         // add indication in UI if keystone was over time
         if (dungeonList[j].clear_time_ms < dungeonList[j].par_time_ms) {
-          dungeons[i].children[2].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)}`;
+          dungeons[i].children[2].innerHTML = `Time: ${msToTime(
+            dungeonList[j].clear_time_ms
+          )}`;
         } else {
-          dungeons[i].children[2].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)} (over time)`;
+          dungeons[i].children[2].innerHTML = `Time: ${msToTime(
+            dungeonList[j].clear_time_ms
+          )} (over time)`;
         }
 
         // score
@@ -249,7 +281,10 @@ function createDungeonDiv() {
   const keystoneDungeon = document.createElement('div');
   keystoneDungeon.className = 'keystone-dungeon';
   keystoneDungeon.innerHTML =
-    '<h3 class="keystone-dungeon-name"></h3>' + '<h3 class="keystone-dungeon-affixes"></h3>' + '<h3 class="keystone-dungeon-time"></h3>' + '<h3 class="keystone-dungeon-score"></h3>';
+    '<h3 class="keystone-dungeon-name"></h3>' +
+    '<h3 class="keystone-dungeon-affixes"></h3>' +
+    '<h3 class="keystone-dungeon-time"></h3>' +
+    '<h3 class="keystone-dungeon-score"></h3>';
   return keystoneDungeon;
 }
 
@@ -257,7 +292,8 @@ function createDungeonDiv() {
  * deleteDungeonData(): Deletes the current dungeon data from the UI if any such data exists
  */
 function deleteDungeonData() {
-  const keystoneDungeonDivs = document.getElementsByClassName('keystone-dungeon');
+  const keystoneDungeonDivs =
+    document.getElementsByClassName('keystone-dungeon');
   while (keystoneDungeonDivs.length > 0) {
     keystoneDungeonDivs[0].parentNode.removeChild(keystoneDungeonDivs[0]);
   }
@@ -275,25 +311,35 @@ function redirectToRaiderio(target) {
   const dungeonName = target.substring(0, target.lastIndexOf('-'));
   const affix = target.charAt(target.length - 1);
 
-  fetchCharacterData(regionList.value, realm.value, charName.value).then((data) => {
-    const fullData = data.mythic_plus_best_runs.concat(data.mythic_plus_alternate_runs);
+  fetchCharacterData(regionList.value, realm.value, charName.value).then(
+    (data) => {
+      const fullData = data.mythic_plus_best_runs.concat(
+        data.mythic_plus_alternate_runs
+      );
 
-    if (affix === 'F') {
-      const targetDiv = fullData.filter((item) => {
-        return item.short_name === dungeonName && item.affixes[0].name === 'Fortified';
-      });
-      if (Array.isArray(targetDiv) && targetDiv.length) {
-        window.open(`${targetDiv[0].url}`, '_blank');
-      }
-    } else {
-      const targetDiv = fullData.filter((item) => {
-        return item.short_name === dungeonName && item.affixes[0].name === 'Tyrannical';
-      });
-      if (Array.isArray(targetDiv) && targetDiv.length) {
-        window.open(`${targetDiv[0].url}`, '_blank');
+      if (affix === 'F') {
+        const targetDiv = fullData.filter((item) => {
+          return (
+            item.short_name === dungeonName &&
+            item.affixes[0].name === 'Fortified'
+          );
+        });
+        if (Array.isArray(targetDiv) && targetDiv.length) {
+          window.open(`${targetDiv[0].url}`, '_blank');
+        }
+      } else {
+        const targetDiv = fullData.filter((item) => {
+          return (
+            item.short_name === dungeonName &&
+            item.affixes[0].name === 'Tyrannical'
+          );
+        });
+        if (Array.isArray(targetDiv) && targetDiv.length) {
+          window.open(`${targetDiv[0].url}`, '_blank');
+        }
       }
     }
-  });
+  );
 }
 
 /**
@@ -330,7 +376,9 @@ function appendDivCopies(data, original, appendTo, affix) {
 
     // set id and background
     clone.id = `${data.seasons[0].dungeons[i].short_name}-${affix}`;
-    clone.style.backgroundImage = setDungeonBackground(data.seasons[0].dungeons[i].short_name);
+    clone.style.backgroundImage = setDungeonBackground(
+      data.seasons[0].dungeons[i].short_name
+    );
 
     appendTo.appendChild(clone);
 
@@ -373,5 +421,13 @@ function isKeystoneMaster(playerRating) {
 function msToTime(s) {
   // Pad to 2 or 3 digits, default is 2
   var pad = (n, z = 2) => ('00' + n).slice(-z);
-  return pad((s / 3.6e6) | 0) + ':' + pad(((s % 3.6e6) / 6e4) | 0) + ':' + pad(((s % 6e4) / 1000) | 0) + '.' + pad(s % 1000, 3);
+  return (
+    pad((s / 3.6e6) | 0) +
+    ':' +
+    pad(((s % 3.6e6) / 6e4) | 0) +
+    ':' +
+    pad(((s % 6e4) / 1000) | 0) +
+    '.' +
+    pad(s % 1000, 3)
+  );
 }
