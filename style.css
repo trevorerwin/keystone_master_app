@@ -129,6 +129,7 @@ body {
 }
 
 .keystone-dungeon {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,4 +144,13 @@ body {
   font-size: 11px;
   letter-spacing: 2px;
   transition: background-image 0.2s;
+}
+
+.arrow-icon {
+  position: absolute;
+  font-size: 20px;
+  color: #4db74d;
+  top: 5%;
+  left: 2%;
+  display: none;
 }

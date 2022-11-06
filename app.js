@@ -30,7 +30,7 @@ submitBtn.addEventListener('click', () => {
             deleteDungeonData();
             processDungeonData(charData, staticData);
             if (!isKeystoneMaster(charData.mythic_plus_scores_by_season[0].scores.all)) {
-              recommendDungeonToImprove(fortifiedDungeonList, tyrannicalDungeonList);
+              recommendDungeonToImprove(fortifiedDungeonList.children, tyrannicalDungeonList.children);
             }
           }
         });
@@ -105,21 +105,27 @@ function displayIntro(data) {
   }
 }
 
+/**
+ * recommendDungeonToImprove(): Inserts an arrow icon to the top left of the dungeon div, serving as an indicator to the user that the dungeon score can be improved in order to obtain KSM
+ *
+ * @param {Object} fortifiedDungeons: the fortified dungeon list
+ * @param {Object} tyrannicalDungeons: the tyrannical dungeon list
+ */
 function recommendDungeonToImprove(fortifiedDungeons, tyrannicalDungeons) {
-  const fortChildren = fortifiedDungeons.children;
-  const tyranChildren = tyrannicalDungeons.children;
-  for (let i = 0; i < fortChildren.length; i++) {
-    const str = fortChildren[i].children[3].innerHTML;
+  for (let i = 0; i < fortifiedDungeons.length; i++) {
+    console.log(fortifiedDungeons[i].children[0]);
+
+    const str = fortifiedDungeons[i].children[4].innerHTML;
     const score = Number(str.replace(/[^0-9\.]+/g, ''));
     if (score < 125) {
-      console.log(`recommend ${fortChildren[i].id}`);
+      fortifiedDungeons[i].children[0].style.display = 'block';
     }
   }
-  for (let i = 0; i < tyranChildren.length; i++) {
-    const str = tyranChildren[i].children[3].innerHTML;
+  for (let i = 0; i < tyrannicalDungeons.length; i++) {
+    const str = tyrannicalDungeons[i].children[4].innerHTML;
     const score = Number(str.replace(/[^0-9\.]+/g, ''));
     if (score < 125) {
-      console.log(`recommend ${tyranChildren[i].id}`);
+      tyrannicalDungeons[i].children[0].style.display = 'block';
     }
   }
 }
@@ -188,26 +194,26 @@ function insertDungeonData(dungeons, dungeonList) {
     for (let j = 0; j < dungeonList.length; j++) {
       if (dungeonList[j].short_name === dungeons[i].id.substring(0, dungeons[i].id.lastIndexOf('-'))) {
         // dungeon name and upgrade level
-        dungeons[i].children[0].innerHTML = `${keystoneUpgrade(dungeonList[j].num_keystone_upgrades)}${dungeonList[j].mythic_level} ${dungeonList[j].dungeon}`;
+        dungeons[i].children[1].innerHTML = `${keystoneUpgrade(dungeonList[j].num_keystone_upgrades)}${dungeonList[j].mythic_level} ${dungeonList[j].dungeon}`;
 
         // affixes
-        dungeons[i].children[1].innerHTML = `${dungeonList[j].affixes[0].name}, ${dungeonList[j].affixes[1].name}, ${dungeonList[j].affixes[2].name}, ${dungeonList[j].affixes[3].name}`;
+        dungeons[i].children[2].innerHTML = `${dungeonList[j].affixes[0].name}, ${dungeonList[j].affixes[1].name}, ${dungeonList[j].affixes[2].name}, ${dungeonList[j].affixes[3].name}`;
 
         // clear time
         // add indication in UI if keystone was over time
         if (dungeonList[j].clear_time_ms < dungeonList[j].par_time_ms) {
-          dungeons[i].children[2].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)}`;
+          dungeons[i].children[3].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)}`;
         } else {
-          dungeons[i].children[2].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)} (over time)`;
+          dungeons[i].children[3].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)} (over time)`;
         }
 
         // score
-        dungeons[i].children[3].innerHTML = `Score: ${dungeonList[j].score}`;
+        dungeons[i].children[4].innerHTML = `Score: ${dungeonList[j].score}`;
       }
     }
     // check if div is still empty
-    if (dungeons[i].children[0].innerHTML === '') {
-      dungeons[i].children[0].innerHTML = 'Incomplete';
+    if (dungeons[i].children[1].innerHTML === '') {
+      dungeons[i].children[1].innerHTML = 'Incomplete';
     }
   }
 }
@@ -247,7 +253,11 @@ function createDungeonDiv() {
   const keystoneDungeon = document.createElement('div');
   keystoneDungeon.className = 'keystone-dungeon';
   keystoneDungeon.innerHTML =
-    '<h3 class="keystone-dungeon-name"></h3>' + '<h3 class="keystone-dungeon-affixes"></h3>' + '<h3 class="keystone-dungeon-time"></h3>' + '<h3 class="keystone-dungeon-score"></h3>';
+    '<div class="arrow-icon"><i class="fa-regular fa-circle-up arrow-icon"></i></div>' +
+    '<h3 class="keystone-dungeon-name"></h3>' +
+    '<h3 class="keystone-dungeon-affixes"></h3>' +
+    '<h3 class="keystone-dungeon-time"></h3>' +
+    '<h3 class="keystone-dungeon-score"></h3>';
   return keystoneDungeon;
 }
 
