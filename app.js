@@ -25,7 +25,6 @@ submitBtn.addEventListener('click', () => {
           if (charData.statusCode === 400) {
             displayErrorMessage(charData.message);
           } else {
-            console.log(charData);
             displayIntro(charData);
             deleteDungeonData();
             processDungeonData(charData, staticData);
@@ -113,17 +112,15 @@ function displayIntro(data) {
  */
 function recommendDungeonToImprove(fortifiedDungeons, tyrannicalDungeons) {
   for (let i = 0; i < fortifiedDungeons.length; i++) {
-    console.log(fortifiedDungeons[i].children[0]);
-
-    const str = fortifiedDungeons[i].children[4].innerHTML;
-    const score = Number(str.replace(/[^0-9\.]+/g, ''));
+    const scoreString = fortifiedDungeons[i].children[4].innerHTML;
+    const score = Number(scoreString.replace(/[^0-9\.]+/g, ''));
     if (score < 125) {
       fortifiedDungeons[i].children[0].style.display = 'block';
     }
   }
   for (let i = 0; i < tyrannicalDungeons.length; i++) {
-    const str = tyrannicalDungeons[i].children[4].innerHTML;
-    const score = Number(str.replace(/[^0-9\.]+/g, ''));
+    const scoreString = tyrannicalDungeons[i].children[4].innerHTML;
+    const score = Number(scoreString.replace(/[^0-9\.]+/g, ''));
     if (score < 125) {
       tyrannicalDungeons[i].children[0].style.display = 'block';
     }
@@ -272,7 +269,7 @@ function deleteDungeonData() {
 }
 
 /**
- * redirectToRaiderio(): Opens a webpage of the keystone run the user clicked on
+ * redirectToRaiderio(): Redirects the user to a new tab, showing the completed dungeon run on Raider.io
  *
  * @param {Object} target: the event object (dungeon div user clicked on)
  */
