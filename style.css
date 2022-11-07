@@ -24,7 +24,7 @@ body {
 /* Data Input Section */
 
 .data-input-container {
-  margin-top: 64px;
+  margin-top: 34px;
 }
 .data-input-header {
   text-align: center;
@@ -95,24 +95,21 @@ body {
 
 /* Data Display Section */
 .data-display {
-  display: grid;
   text-align: center;
-  justify-items: center;
-  align-items: center;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  gap: 0px 0px;
-  grid-template-areas: 'char-results keystone-text';
   margin-top: 30px;
   margin-bottom: 30px;
 }
 
 .char-results {
-  grid-area: char-results;
+  margin-bottom: 30px;
 }
 
-.keystone-text {
-  grid-area: keystone-text;
+.char-results h4 {
+  font-size: 30px;
+}
+
+.char-mythic-text {
+  padding: 0 20px 0 20px;
 }
 
 /* Keystone Info Section */

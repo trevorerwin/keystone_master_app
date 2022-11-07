@@ -99,7 +99,7 @@ function displayIntro(data) {
       <h4>Mythic+ Score: <span class="mythic-score-text" style="color: ${data.mythic_plus_scores_by_season[0].segments.all.color}">${data.mythic_plus_scores_by_season[0].scores.all}</span></h4>
     </div>
     <div class="char-mythic-text">
-      <h2>You're not quite a Keystone Master just yet. See what keys you need done below</h2>
+      <h2>You're not quite a Keystone Master just yet. Check and see which dungeons you need to improve below.</h2>
     </div>`;
   }
 }
