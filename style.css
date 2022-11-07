@@ -138,7 +138,7 @@ body {
   background-size: cover;
   border-radius: 5px;
   color: #fff;
-  font-size: 11px;
+  font-size: 9px;
   letter-spacing: 2px;
   transition: background-image 0.2s;
 }
@@ -150,4 +150,94 @@ body {
   top: 5%;
   left: 2%;
   display: none;
+}
+
+/* Breakpoints */
+@media (min-width: 768px) {
+  .keystone-dungeon {
+    width: 70%;
+    font-size: 17px;
+    height: 200px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .data-input-header {
+    font-size: 46px;
+  }
+
+  .data-input-container h2 {
+    font-size: 34px;
+  }
+  .data-input-values {
+    height: 240px;
+  }
+
+  .region-label,
+  .realm-label,
+  .char-label {
+    font-size: 25px;
+  }
+
+  .regions {
+    font-size: 23px;
+  }
+
+  .data-input-box {
+    height: 20%;
+    width: 30%;
+    font-size: 27px;
+  }
+
+  .submit-btn {
+    min-width: 110px;
+    min-height: 32px;
+    font-size: 23px;
+    margin-top: 15px;
+  }
+
+  .char-results img {
+    height: 110px;
+    width: 110px;
+  }
+
+  .char-results h4 {
+    font-size: 36px;
+  }
+
+  .char-mythic-text h2 {
+    font-size: 40px;
+  }
+
+  .keystone-runs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.1fr 1.9fr;
+    gap: 0px 0px;
+    grid-template-areas:
+      'fortified-header tyrannical-header'
+      'fortified-runs tyrannical-runs';
+  }
+
+  .fortified-header {
+    grid-area: fortified-header;
+  }
+
+  .tyrannical-header {
+    grid-area: tyrannical-header;
+  }
+
+  .fortified-runs {
+    grid-area: fortified-runs;
+  }
+
+  .tyrannical-runs {
+    grid-area: tyrannical-runs;
+  }
+
+  .keystone-dungeon {
+    width: 85%;
+    font-size: 18px;
+    height: 200px;
+  }
 }
