@@ -250,7 +250,10 @@ function createDungeonDiv() {
   const keystoneDungeon = document.createElement('div');
   keystoneDungeon.className = 'keystone-dungeon';
   keystoneDungeon.innerHTML =
-    '<div class="arrow-icon"><i class="fa-regular fa-circle-up arrow-icon"></i></div>' +
+    '<div class="arrow-icon">' +
+    '<i class="fa-regular fa-circle-up arrow-icon"></i>' +
+    '<p class="arrow-icon-text">Improve this dungeon to up your M+ score</p>' +
+    '</div>' +
     '<h3 class="keystone-dungeon-name"></h3>' +
     '<h3 class="keystone-dungeon-affixes"></h3>' +
     '<h3 class="keystone-dungeon-time"></h3>' +
