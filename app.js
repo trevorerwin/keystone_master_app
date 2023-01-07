@@ -86,7 +86,7 @@ function displayIntro(data) {
   if (isKeystoneMaster(data.mythic_plus_scores_by_season[0].scores.all)) {
     dataDisplay.innerHTML = `
     <div class="char-results">
-      <img src="${data.thumbnail_url}"></img>
+      <img src="${data.thumbnail_url}" alt="World of Warcraft character thumbnail"></img>
       <h4>${data.name}</h4>
       <h4>Mythic+ Score: <span class="mythic-score-text" style="color: ${data.mythic_plus_scores_by_season[0].segments.all.color}">${data.mythic_plus_scores_by_season[0].scores.all}</span></h4>
     </div>
@@ -96,7 +96,7 @@ function displayIntro(data) {
   } else {
     dataDisplay.innerHTML = `
     <div class="char-results">
-      <img src="${data.thumbnail_url}"></img>
+      <img src="${data.thumbnail_url}" alt="World of Warcraft character thumbnail"></img>
       <h4>${data.name}</h4>
       <h4>Mythic+ Score: <span class="mythic-score-text" style="color: ${data.mythic_plus_scores_by_season[0].segments.all.color}">${data.mythic_plus_scores_by_season[0].scores.all}</span></h4>
     </div>
@@ -163,7 +163,7 @@ function processDungeonData(charData, staticData) {
 }
 
 /**
- * sortDungeonByAffix(): filters the JSON data to only contain dungeons that include a specific affix
+ * filterDungeonByAffix(): filters the JSON data to only contain dungeons that include a specific affix
  *
  * @param {Object} dungeonList: JSON object fetched from API
  * @param {String} affix: the affix we want to filter by
