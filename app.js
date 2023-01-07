@@ -227,23 +227,23 @@ function insertDungeonData(dungeons, dungeonList) {
 function setDungeonBackground(name) {
   switch (name) {
     case 'AA':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/algethar.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/algethar.jpg)';
     case 'COS':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/courtofstars.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/courtofstars.jpg)';
     case 'HOV':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/hallsofvalor.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/hallsofvalor.jpg)';
     case 'RLP':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/rubylifepools.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/rubylifepools.jpg)';
     case 'SBG':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/shadowmoon.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/shadowmoon.jpg)';
     case 'TJS':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/templejade.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/templejade.jpg)';
     case 'AV':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/azurevault.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/azurevault.jpg)';
     case 'NO':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/nokhud.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/nokhud.jpg)';
     default:
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/algethar.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5)), url(img/algethar.jpg)';
   }
 }
 

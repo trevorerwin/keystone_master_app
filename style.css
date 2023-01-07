@@ -119,10 +119,24 @@ body {
 
 .keystone-info h1 {
   text-align: center;
+  margin-bottom: 22px;
+  text-decoration: underline;
 }
 
-.keystone-runs h2 {
-  text-align: center;
+.fortified-header-container,
+.tyrannical-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icon img {
+  max-width: 100%;
+  border-radius: 2px;
+}
+
+.header-text h2 {
+  padding-left: 8px;
 }
 
 .keystone-dungeon {
