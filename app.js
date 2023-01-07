@@ -16,15 +16,17 @@ submitBtn.addEventListener('click', () => {
   if (realm.value == '' || charName.value == '') {
     displayErrorMessage('You must fill in all required fields before submitting');
   } else {
-    // 8 = Shadowlands ID, will change for Dragonflight
-    fetchStaticDungeonData(8).then((staticData) => {
+    // 9 = Dragonflight ID
+    fetchStaticDungeonData(9).then((staticData) => {
       if (staticData.statusCode === 400) {
         displayErrorMessage(staticData.message);
       } else {
+        console.log(staticData);
         fetchCharacterData(regionList.value, realm.value, charName.value).then((charData) => {
           if (charData.statusCode === 400) {
             displayErrorMessage(charData.message);
           } else {
+            console.log(charData);
             displayIntro(charData);
             deleteDungeonData();
             processDungeonData(charData, staticData);
@@ -224,21 +226,24 @@ function insertDungeonData(dungeons, dungeonList) {
  */
 function setDungeonBackground(name) {
   switch (name) {
-    case 'YARD':
-    case 'WORK':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/mechagon.jpg)';
-    case 'UPPR':
-    case 'LOWR':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/karazhan.jpg)';
-    case 'GMBT':
-    case 'STRT':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/tazavesh.jpg)';
-    case 'ID':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/irondocks.jpg)';
-    case 'GD':
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/grimraildepot.jpg)';
+    case 'AA':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/algethar.jpg)';
+    case 'COS':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/courtofstars.jpg)';
+    case 'HOV':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/hallsofvalor.jpg)';
+    case 'RLP':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/rubylifepools.jpg)';
+    case 'SBG':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/shadowmoon.jpg)';
+    case 'TJS':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/templejade.jpg)';
+    case 'AV':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/azurevault.jpg)';
+    case 'NO':
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)), url(img/nokhud.jpg)';
     default:
-      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/karazhan.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(img/algethar.jpg)';
   }
 }
 
