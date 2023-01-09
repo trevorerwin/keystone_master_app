@@ -28,3 +28,29 @@ them whether their character has attained the Keystone Master achievement.</p>
   <img src="project_img/project_mobile_one.png" width="275px" height="450px">
   <img src="project_img/project_mobile_two.png" width="275px" height="450px">
 </p>
+
+<h2>Contributing</h2>
+<p>If you wish to make a suggestion or a contribution, please fork the repo and create a pull request.</p>
+
+ 1. **Fork** the repo on GitHub
+ 2. **Clone** the project to your own machine
+ 3. **Commit** changes to your own branch
+ 4. **Push** your work back up to your fork
+ 5. Submit a **Pull request**
+ 
+<h2>License</h2>
+<p>Distributed under the MIT License. See `LICENSE.md` for more information.</p>
+
+<h2>Acknowledgments</h2>
+<ul>
+  <li><a href="https://raider.io/api">Raider.io</li>
+  <li><a href="https://fontawesome.com/">Font Awesome</li>
+  <li><a href="https://fonts.google.com/">Google Fonts</li>
+</ul>
+
+<h2>Contact</h2>
+<p>Trevor Erwin - trevorerwin1024@gmail.com</p>
+
+
+
+
