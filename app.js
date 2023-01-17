@@ -21,16 +21,14 @@ submitBtn.addEventListener('click', () => {
       if (staticData.statusCode === 400) {
         displayErrorMessage(staticData.message);
       } else {
-        console.log(staticData);
         fetchCharacterData(regionList.value, realm.value, charName.value).then((charData) => {
           if (charData.statusCode === 400) {
             displayErrorMessage(charData.message);
           } else {
-            console.log(charData);
             displayIntro(charData);
             deleteDungeonData();
             processDungeonData(charData, staticData);
-            if (!isKeystoneMaster(charData.mythic_plus_scores_by_season[0].scores.all)) {
+            if (charData.mythic_plus_scores_by_season[0].scores.all < 2000) {
               recommendDungeonToImprove(fortifiedDungeonList.children, tyrannicalDungeonList.children);
             }
           }
@@ -83,7 +81,7 @@ async function fetchCharacterData(region, realm, char) {
  */
 function displayIntro(data) {
   const dataDisplay = document.querySelector('.data-display');
-  if (isKeystoneMaster(data.mythic_plus_scores_by_season[0].scores.all)) {
+  if (data.mythic_plus_scores_by_season[0].scores.all >= 2000) {
     dataDisplay.innerHTML = `
     <div class="char-results">
       <img src="${data.thumbnail_url}" alt="World of Warcraft character thumbnail"></img>
@@ -322,7 +320,7 @@ function keystoneUpgrade(num) {
 }
 
 /**
- * appendNCopies(): Appends nodes to a document element - used for inserting the keystone-dungeon divs into the document
+ * appendDivCopies(): Appends nodes to a document element - used for inserting the keystone-dungeon divs into the document
  *
  * @param {Object} data: our static dungeon data
  * @param {Object} original: the node we want to copy
@@ -346,8 +344,6 @@ function appendDivCopies(data, original, appendTo, affix) {
     clone.style.backgroundImage = setDungeonBackground(data.seasons[0].dungeons[i].short_name);
 
     appendTo.appendChild(clone);
-
-    // dungeons[i].style.backgroundImage = setDungeonBackground(dungeonList[i].short_name);
   }
 }
 
@@ -363,17 +359,6 @@ function displayErrorMessage(msg) {
   setTimeout(function () {
     errorBox.style.display = 'none';
   }, 3000);
-}
-
-/**
- * isKeystoneMaster(): Checks if the inputted character has KSM already
- *
- * @param {Integer} playerRating: the players M+ score
- *
- * @returns true if the playerRating is greater than or equal to 2000, else false
- */
-function isKeystoneMaster(playerRating) {
-  return playerRating >= 2000;
 }
 
 /**
