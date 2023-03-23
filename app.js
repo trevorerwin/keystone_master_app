@@ -135,6 +135,8 @@ function recommendDungeonToImprove(fortifiedDungeons, tyrannicalDungeons) {
  */
 function processDungeonData(charData, staticData) {
   // create a keystone-dungeon div
+  console.log(charData);
+  console.log(staticData);
   const keystoneDungeon = createDungeonDiv();
 
   // show the keystone info section
@@ -151,10 +153,13 @@ function processDungeonData(charData, staticData) {
   const tyrannicalRuns = filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Tyrannical');
   const fortifiedRuns = filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Fortified');
 
+  console.log(tyrannicalRuns);
+
   // get all keystone-dungeon elements
   const keystoneDungeonDivsFort = document.getElementsByClassName('keystone-dungeon-fortified');
   const keystoneDungeonDivsTyran = document.getElementsByClassName('keystone-dungeon-tyrannical');
 
+  console.log(keystoneDungeonDivsFort);
   // insert the data into the UI
   insertDungeonData(keystoneDungeonDivsFort, fortifiedRuns);
   insertDungeonData(keystoneDungeonDivsTyran, tyrannicalRuns);
@@ -340,8 +345,9 @@ function appendDivCopies(data, original, appendTo, affix) {
     }
 
     // set id and background
-    clone.id = `${data.seasons[0].dungeons[i].short_name}-${affix}`;
-    clone.style.backgroundImage = setDungeonBackground(data.seasons[0].dungeons[i].short_name);
+    // TODO: CHANGE seasons[1] to seasons[0] for season 2 of Dragonflight
+    clone.id = `${data.seasons[1].dungeons[i].short_name}-${affix}`;
+    clone.style.backgroundImage = setDungeonBackground(data.seasons[1].dungeons[i].short_name);
 
     appendTo.appendChild(clone);
   }
