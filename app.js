@@ -39,7 +39,7 @@ submitBtn.addEventListener('click', () => {
 });
 
 allDungeonList.addEventListener('click', (e) => {
-  redirectToRaiderio(e.path[0].id);
+  redirectToRaiderio(e.composedPath()[0].getAttribute('id'));
 });
 
 /**
@@ -282,34 +282,25 @@ function deleteDungeonData() {
 /**
  * redirectToRaiderio(): Redirects the user to a new tab, showing the completed dungeon run on Raider.io
  *
- * @param {Object} target: the event object (dungeon div user clicked on)
+ * @param {String} target: The id of the div we clicked on (ex. AA-F)
  */
-function redirectToRaiderio(target) {
+async function redirectToRaiderio(target) {
   const regionList = document.querySelector('.regions');
   const realm = document.querySelector('.realm-text');
   const charName = document.querySelector('.char-text');
   const dungeonName = target.substring(0, target.lastIndexOf('-'));
   const affix = target.charAt(target.length - 1);
+  const data = await fetchCharacterData(regionList.value, realm.value, charName.value);
+  const fullData = [...data.mythic_plus_best_runs, ...data.mythic_plus_alternate_runs];
 
-  fetchCharacterData(regionList.value, realm.value, charName.value).then((data) => {
-    const fullData = data.mythic_plus_best_runs.concat(data.mythic_plus_alternate_runs);
-
-    if (affix === 'F') {
-      const targetDiv = fullData.filter((item) => {
-        return item.short_name === dungeonName && item.affixes[0].name === 'Fortified';
-      });
-      if (Array.isArray(targetDiv) && targetDiv.length) {
-        window.open(`${targetDiv[0].url}`, '_blank');
-      }
-    } else {
-      const targetDiv = fullData.filter((item) => {
-        return item.short_name === dungeonName && item.affixes[0].name === 'Tyrannical';
-      });
-      if (Array.isArray(targetDiv) && targetDiv.length) {
-        window.open(`${targetDiv[0].url}`, '_blank');
-      }
-    }
+  const targetDiv = fullData.find((item) => {
+    const itemAffix = item.affixes[0].name;
+    return item.short_name === dungeonName && itemAffix === (affix === 'F' ? 'Fortified' : 'Tyrannical');
   });
+
+  if (targetDiv) {
+    window.open(targetDiv.url, '_blank');
+  }
 }
 
 /**
