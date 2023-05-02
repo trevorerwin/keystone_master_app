@@ -9,32 +9,36 @@ const allDungeonList = document.querySelector('.keystone-runs');
 /**
  * Event Listeners
  */
-submitBtn.addEventListener('click', () => {
+submitBtn.addEventListener('click', async () => {
   const regionList = document.querySelector('.regions');
   const realm = document.querySelector('.realm-text');
   const charName = document.querySelector('.char-text');
-  if (realm.value == '' || charName.value == '') {
+  if (realm.value === '' || charName.value === '') {
     displayErrorMessage('You must fill in all required fields before submitting');
-  } else {
-    // 9 = Dragonflight ID
-    fetchStaticDungeonData(9).then((staticData) => {
-      if (staticData.statusCode === 400) {
-        displayErrorMessage(staticData.message);
-      } else {
-        fetchCharacterData(regionList.value, realm.value, charName.value).then((charData) => {
-          if (charData.statusCode === 400) {
-            displayErrorMessage(charData.message);
-          } else {
-            displayIntro(charData);
-            deleteDungeonData();
-            processDungeonData(charData, staticData);
-            if (charData.mythic_plus_scores_by_season[0].scores.all < 2000) {
-              recommendDungeonToImprove(fortifiedDungeonList.children, tyrannicalDungeonList.children);
-            }
-          }
-        });
-      }
-    });
+    return;
+  }
+
+  try {
+    const staticData = await fetchStaticDungeonData(9);
+    if (staticData.statusCode === 400) {
+      displayErrorMessage(staticData.message);
+      return;
+    }
+
+    const charData = await fetchCharacterData(regionList.value, realm.value, charName.value);
+    if (charData.statusCode === 400) {
+      displayErrorMessage(charData.message);
+      return;
+    }
+
+    displayIntro(charData);
+    deleteDungeonData();
+    processDungeonData(charData, staticData);
+    if (charData.mythic_plus_scores_by_season[0].scores.all < 2000) {
+      recommendDungeonToImprove(fortifiedDungeonList.children, tyrannicalDungeonList.children);
+    }
+  } catch (error) {
+    displayErrorMessage('An error occurred while processing your request');
   }
 });
 
@@ -135,34 +139,23 @@ function recommendDungeonToImprove(fortifiedDungeons, tyrannicalDungeons) {
  */
 function processDungeonData(charData, staticData) {
   // create a keystone-dungeon div
-  console.log(charData);
-  console.log(staticData);
   const keystoneDungeon = createDungeonDiv();
 
   // show the keystone info section
-  const keystoneInfoSection = document.querySelector('.keystone-info');
-  keystoneInfoSection.style.display = 'block';
+  document.querySelector('.keystone-info').style.display = 'block';
 
   // append divs to fortified-runs and tyrannical-runs
-  const fortifiedList = document.querySelector('.fortified-runs');
-  const tyrannicalList = document.querySelector('.tyrannical-runs');
-  appendDivCopies(staticData, keystoneDungeon, fortifiedList, 'F');
-  appendDivCopies(staticData, keystoneDungeon, tyrannicalList, 'T');
+  const appendDiv = (list, affix) => appendDivCopies(staticData, keystoneDungeon, list, affix);
+  appendDiv(document.querySelector('.fortified-runs'), 'F');
+  appendDiv(document.querySelector('.tyrannical-runs'), 'T');
 
   // sort the dungeons by affix
-  const tyrannicalRuns = filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Tyrannical');
-  const fortifiedRuns = filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), 'Fortified');
+  const getDungeonsByAffix = (affix) => filterDungeonByAffix(charData.mythic_plus_best_runs.concat(charData.mythic_plus_alternate_runs), affix);
 
-  console.log(tyrannicalRuns);
-
-  // get all keystone-dungeon elements
-  const keystoneDungeonDivsFort = document.getElementsByClassName('keystone-dungeon-fortified');
-  const keystoneDungeonDivsTyran = document.getElementsByClassName('keystone-dungeon-tyrannical');
-
-  console.log(keystoneDungeonDivsFort);
   // insert the data into the UI
-  insertDungeonData(keystoneDungeonDivsFort, fortifiedRuns);
-  insertDungeonData(keystoneDungeonDivsTyran, tyrannicalRuns);
+  const insertDungeonDataByAffix = (affix) => insertDungeonData(document.getElementsByClassName(`keystone-dungeon-${affix.toLowerCase()}`), getDungeonsByAffix(affix));
+  insertDungeonDataByAffix('Fortified');
+  insertDungeonDataByAffix('Tyrannical');
 }
 
 /**
