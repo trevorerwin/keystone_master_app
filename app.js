@@ -155,7 +155,7 @@ function processDungeonData(charData, staticData) {
   // insert the data into the UI
   const insertDungeonDataByAffix = (affix) => insertDungeonData(document.getElementsByClassName(`keystone-dungeon-${affix.toLowerCase()}`), getDungeonsByAffix(affix));
 
-  insertDungeonDataByAffix('cheese');
+  insertDungeonDataByAffix('Fortified');
   insertDungeonDataByAffix('Tyrannical');
 }
 
