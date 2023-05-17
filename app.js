@@ -154,7 +154,8 @@ function processDungeonData(charData, staticData) {
 
   // insert the data into the UI
   const insertDungeonDataByAffix = (affix) => insertDungeonData(document.getElementsByClassName(`keystone-dungeon-${affix.toLowerCase()}`), getDungeonsByAffix(affix));
-  insertDungeonDataByAffix('Fortified');
+
+  insertDungeonDataByAffix('cheese');
   insertDungeonDataByAffix('Tyrannical');
 }
 
@@ -168,6 +169,9 @@ function processDungeonData(charData, staticData) {
  */
 function filterDungeonByAffix(dungeonList, affix) {
   const result = dungeonList.filter((item) => {
+    console.log(item.affixes[0].name);
+    console.log(affix);
+
     if (item.affixes[0].name === affix) {
       return true;
     } else {
@@ -222,24 +226,24 @@ function insertDungeonData(dungeons, dungeonList) {
  */
 function setDungeonBackground(name) {
   switch (name) {
-    case 'AA':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/algethar.jpg)';
-    case 'COS':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/courtofstars.jpg)';
-    case 'HOV':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/hallsofvalor.jpg)';
-    case 'RLP':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/rubylifepools.jpg)';
-    case 'SBG':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/shadowmoon.jpg)';
-    case 'TJS':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/templejade.jpg)';
-    case 'AV':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/azurevault.jpg)';
-    case 'NO':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/nokhud.jpg)';
+    case 'FH':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/freehold.jpg)';
+    case 'HOI':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/halls-of-infusion.jpg)';
+    case 'NL':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/neltharions-lair.jpg)';
+    case 'NELT':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/neltharus.jpg)';
+    case 'UNDR':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/underrot.jpg)';
+    case 'BH':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/brackenhide-hollow.jpg)';
+    case 'VP':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/vortex-pinnacle.jpg)';
+    case 'ULD':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/uldaman.jpg)';
     default:
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5)), url(img/algethar.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5)), url(img/freehold.jpg)';
   }
 }
 
@@ -329,9 +333,8 @@ function appendDivCopies(data, original, appendTo, affix) {
     }
 
     // set id and background
-    // TODO: CHANGE seasons[1] to seasons[0] for season 2 of Dragonflight
-    clone.id = `${data.seasons[1].dungeons[i].short_name}-${affix}`;
-    clone.style.backgroundImage = setDungeonBackground(data.seasons[1].dungeons[i].short_name);
+    clone.id = `${data.seasons[0].dungeons[i].short_name}-${affix}`;
+    clone.style.backgroundImage = setDungeonBackground(data.seasons[0].dungeons[i].short_name);
 
     appendTo.appendChild(clone);
   }
