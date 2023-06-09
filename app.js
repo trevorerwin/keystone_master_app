@@ -21,12 +21,14 @@ submitBtn.addEventListener('click', async () => {
   try {
     const staticData = await fetchStaticDungeonData(9);
     if (staticData.statusCode === 400) {
+      console.log('dungeon data error');
       displayErrorMessage(staticData.message);
       return;
     }
 
     const charData = await fetchCharacterData(regionList.value, realm.value, charName.value);
     if (charData.statusCode === 400) {
+      console.log('char data error');
       displayErrorMessage(charData.message);
       return;
     }
@@ -169,9 +171,6 @@ function processDungeonData(charData, staticData) {
  */
 function filterDungeonByAffix(dungeonList, affix) {
   const result = dungeonList.filter((item) => {
-    console.log(item.affixes[0].name);
-    console.log(affix);
-
     if (item.affixes[0].name === affix) {
       return true;
     } else {
@@ -196,7 +195,7 @@ function insertDungeonData(dungeons, dungeonList) {
         dungeons[i].children[1].innerHTML = `${keystoneUpgrade(dungeonList[j].num_keystone_upgrades)}${dungeonList[j].mythic_level} ${dungeonList[j].dungeon}`;
 
         // affixes
-        dungeons[i].children[2].innerHTML = `${dungeonList[j].affixes[0].name}, ${dungeonList[j].affixes[1].name}, ${dungeonList[j].affixes[2].name}, ${dungeonList[j].affixes[3].name}`;
+        dungeons[i].children[2].innerHTML = `${dungeonList[j].affixes[0].name}, ${dungeonList[j].affixes[1].name}, ${dungeonList[j].affixes[2].name}`;
 
         // clear time
         // add indication in UI if keystone was over time
