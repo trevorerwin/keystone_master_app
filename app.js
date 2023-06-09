@@ -189,29 +189,25 @@ function filterDungeonByAffix(dungeonList, affix) {
  */
 function insertDungeonData(dungeons, dungeonList) {
   for (let i = 0; i < dungeons.length; i++) {
-    for (let j = 0; j < dungeonList.length; j++) {
-      if (dungeonList[j].short_name === dungeons[i].id.substring(0, dungeons[i].id.lastIndexOf('-'))) {
-        // dungeon name and upgrade level
-        dungeons[i].children[1].innerHTML = `${keystoneUpgrade(dungeonList[j].num_keystone_upgrades)}${dungeonList[j].mythic_level} ${dungeonList[j].dungeon}`;
+    const dungeon = dungeons[i];
+    // Find a matching dungeon in dungeonList based on the short_name
+    const matchingDungeon = dungeonList.find((d) => d.short_name === dungeon.id.substring(0, dungeon.id.lastIndexOf('-')));
+    if (matchingDungeon) {
+      // Update dungeon name and upgrade level
+      dungeon.children[1].innerHTML = `${keystoneUpgrade(matchingDungeon.num_keystone_upgrades)}${matchingDungeon.mythic_level} ${matchingDungeon.dungeon}`;
 
-        // affixes
-        dungeons[i].children[2].innerHTML = `${dungeonList[j].affixes[0].name}, ${dungeonList[j].affixes[1].name}, ${dungeonList[j].affixes[2].name}`;
+      // Update affixes
+      dungeon.children[2].innerHTML = `${matchingDungeon.affixes[0].name}, ${matchingDungeon.affixes[1].name}, ${matchingDungeon.affixes[2].name}`;
 
-        // clear time
-        // add indication in UI if keystone was over time
-        if (dungeonList[j].clear_time_ms < dungeonList[j].par_time_ms) {
-          dungeons[i].children[3].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)}`;
-        } else {
-          dungeons[i].children[3].innerHTML = `Time: ${msToTime(dungeonList[j].clear_time_ms)} (over time)`;
-        }
+      // Update clear time and add indication if keystone was over time
+      const clearTimeHTML = `Time: ${msToTime(matchingDungeon.clear_time_ms)}`;
+      dungeon.children[3].innerHTML = matchingDungeon.clear_time_ms < matchingDungeon.par_time_ms ? clearTimeHTML : `${clearTimeHTML} (over time)`;
 
-        // score
-        dungeons[i].children[4].innerHTML = `Score: ${dungeonList[j].score}`;
-      }
-    }
-    // check if div is still empty
-    if (dungeons[i].children[1].innerHTML === '') {
-      dungeons[i].children[1].innerHTML = 'Incomplete';
+      // Update score
+      dungeon.children[4].innerHTML = `Score: ${matchingDungeon.score}`;
+    } else {
+      // If no matching dungeon found, mark as incomplete
+      dungeon.children[1].innerHTML = 'Incomplete';
     }
   }
 }
