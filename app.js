@@ -330,6 +330,8 @@ function appendDivCopies(data, original, appendTo, affix) {
     // set id and background
     clone.id = `${data.seasons[0].dungeons[i].short_name}-${affix}`;
     clone.style.backgroundImage = setDungeonBackground(data.seasons[0].dungeons[i].short_name);
+    // tab index for accessibility - 5 is the first tab index after the input fields
+    clone.tabIndex = i + 5;
 
     appendTo.appendChild(clone);
   }
