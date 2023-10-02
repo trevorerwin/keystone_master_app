@@ -185,7 +185,7 @@ function filterDungeonByAffix(dungeonList, affix) {
  * insertDungeonData(): Updates the UI to show the players best M+ runs, displaying the dungeon name, keystone level, upgrade level, affixes, time completed, and score
  *
  * @param {Object} dungeons: a list of keystone-dungeon divs
- * @param {Object} dungeonList: JSON object containing the characters mythic+ * data
+ * @param {Object} dungeonList: JSON object containing the characters mythic+ data
  */
 function insertDungeonData(dungeons, dungeonList) {
   for (let i = 0; i < dungeons.length; i++) {
@@ -219,6 +219,7 @@ function insertDungeonData(dungeons, dungeonList) {
  *
  * @return A string of the background image css style with the correct dungeon image
  */
+//! UPDATE FOR SEASON 3
 function setDungeonBackground(name) {
   switch (name) {
     case 'FH':
@@ -316,7 +317,8 @@ function keystoneUpgrade(num) {
  * @param {String} affix: the fortified/tyrannical affix char(F or T)
  */
 function appendDivCopies(data, original, appendTo, affix) {
-  for (let i = 0; i < data.seasons[0].dungeons.length; i++) {
+  //! CHANGE TO seasons[0] FOR SEASON 3
+  for (let i = 0; i < data.seasons[1].dungeons.length; i++) {
     // clone the node
     let clone = original.cloneNode(true);
 
@@ -328,8 +330,9 @@ function appendDivCopies(data, original, appendTo, affix) {
     }
 
     // set id and background
-    clone.id = `${data.seasons[0].dungeons[i].short_name}-${affix}`;
-    clone.style.backgroundImage = setDungeonBackground(data.seasons[0].dungeons[i].short_name);
+    //! CHANGE TO seasons[0] FOR SEASON 3
+    clone.id = `${data.seasons[1].dungeons[i].short_name}-${affix}`;
+    clone.style.backgroundImage = setDungeonBackground(data.seasons[1].dungeons[i].short_name);
     // tab index for accessibility - 5 is the first tab index after the input fields
     clone.tabIndex = i + 5;
 
