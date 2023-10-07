@@ -33,6 +33,9 @@ submitBtn.addEventListener('click', async () => {
       return;
     }
 
+    console.log(staticData);
+    console.log(charData);
+
     displayIntro(charData);
     deleteDungeonData();
     processDungeonData(charData, staticData);
@@ -318,7 +321,7 @@ function keystoneUpgrade(num) {
  */
 function appendDivCopies(data, original, appendTo, affix) {
   //! CHANGE TO seasons[0] FOR SEASON 3
-  for (let i = 0; i < data.seasons[1].dungeons.length; i++) {
+  for (let i = 0; i < data.seasons[2].dungeons.length; i++) {
     // clone the node
     let clone = original.cloneNode(true);
 
@@ -331,8 +334,8 @@ function appendDivCopies(data, original, appendTo, affix) {
 
     // set id and background
     //! CHANGE TO seasons[0] FOR SEASON 3
-    clone.id = `${data.seasons[1].dungeons[i].short_name}-${affix}`;
-    clone.style.backgroundImage = setDungeonBackground(data.seasons[1].dungeons[i].short_name);
+    clone.id = `${data.seasons[2].dungeons[i].short_name}-${affix}`;
+    clone.style.backgroundImage = setDungeonBackground(data.seasons[2].dungeons[i].short_name);
     // tab index for accessibility - 5 is the first tab index after the input fields
     clone.tabIndex = i + 5;
 
