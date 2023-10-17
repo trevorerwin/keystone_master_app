@@ -21,20 +21,15 @@ submitBtn.addEventListener('click', async () => {
   try {
     const staticData = await fetchStaticDungeonData(9);
     if (staticData.statusCode === 400) {
-      console.log('dungeon data error');
       displayErrorMessage(staticData.message);
       return;
     }
 
     const charData = await fetchCharacterData(regionList.value, realm.value, charName.value);
     if (charData.statusCode === 400) {
-      console.log('char data error');
       displayErrorMessage(charData.message);
       return;
     }
-
-    console.log(staticData);
-    console.log(charData);
 
     displayIntro(charData);
     deleteDungeonData();
@@ -196,23 +191,31 @@ function insertDungeonData(dungeons, dungeonList) {
     // Find a matching dungeon in dungeonList based on the short_name
     const matchingDungeon = dungeonList.find((d) => d.short_name === dungeon.id.substring(0, dungeon.id.lastIndexOf('-')));
     if (matchingDungeon) {
-      // Update dungeon name and upgrade level
+      // Set dungeon name and upgrade level
       dungeon.children[1].innerHTML = `${keystoneUpgrade(matchingDungeon.num_keystone_upgrades)}${matchingDungeon.mythic_level} ${matchingDungeon.dungeon}`;
 
-      // Update affixes
-      dungeon.children[2].innerHTML = `${matchingDungeon.affixes[0].name}, ${matchingDungeon.affixes[1].name}, ${matchingDungeon.affixes[2].name}`;
+      // Set affixes
+      dungeon.children[2].innerHTML = setAffixString(matchingDungeon.affixes);
 
-      // Update clear time and add indication if keystone was over time
+      // Set clear time and add indication if keystone was over time
       const clearTimeHTML = `Time: ${msToTime(matchingDungeon.clear_time_ms)}`;
       dungeon.children[3].innerHTML = matchingDungeon.clear_time_ms < matchingDungeon.par_time_ms ? clearTimeHTML : `${clearTimeHTML} (over time)`;
 
-      // Update score
+      // Set score
       dungeon.children[4].innerHTML = `Score: ${matchingDungeon.score}`;
     } else {
       // If no matching dungeon found, mark as incomplete
       dungeon.children[1].innerHTML = 'Incomplete';
     }
   }
+}
+
+function setAffixString(affixes) {
+  const affixNameArr = [];
+  affixes.forEach((affix) => {
+    affixNameArr.push(affix.name);
+  });
+  return affixNameArr.join(', ');
 }
 
 /**
