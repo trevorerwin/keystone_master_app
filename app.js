@@ -228,24 +228,24 @@ function setAffixString(affixes) {
 //! UPDATE FOR SEASON 3
 function setDungeonBackground(name) {
   switch (name) {
-    case 'FH':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/freehold.jpg)';
-    case 'HOI':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/halls-of-infusion.jpg)';
-    case 'NL':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/neltharions-lair.jpg)';
-    case 'NELT':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/neltharus.jpg)';
-    case 'UNDR':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/underrot.jpg)';
-    case 'BH':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/brackenhide-hollow.jpg)';
-    case 'VP':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/vortex-pinnacle.jpg)';
-    case 'ULD':
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/uldaman.jpg)';
+    case 'AD':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/atal-dazar.jpg)';
+    case 'BRH':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/black-rook-hold.jpg)';
+    case 'FALL':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/doti.jpg)';
+    case 'RISE':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/doti.jpg)';
+    case 'DHT':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/darkheart-thicket.jpg)';
+    case 'EB':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/everbloom.jpg)';
+    case 'TOTT':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/throne-of-the-tides.jpg)';
+    case 'WM':
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(img/waycrest-manor.jpg)';
     default:
-      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5)), url(img/freehold.jpg)';
+      return 'linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5)), url(img/atal-dazar.jpg)';
   }
 }
 
@@ -324,7 +324,7 @@ function keystoneUpgrade(num) {
  */
 function appendDivCopies(data, original, appendTo, affix) {
   //! CHANGE TO seasons[0] FOR SEASON 3
-  for (let i = 0; i < data.seasons[2].dungeons.length; i++) {
+  for (let i = 0; i < data.seasons[0].dungeons.length; i++) {
     // clone the node
     let clone = original.cloneNode(true);
 
@@ -337,8 +337,8 @@ function appendDivCopies(data, original, appendTo, affix) {
 
     // set id and background
     //! CHANGE TO seasons[0] FOR SEASON 3
-    clone.id = `${data.seasons[2].dungeons[i].short_name}-${affix}`;
-    clone.style.backgroundImage = setDungeonBackground(data.seasons[2].dungeons[i].short_name);
+    clone.id = `${data.seasons[0].dungeons[i].short_name}-${affix}`;
+    clone.style.backgroundImage = setDungeonBackground(data.seasons[0].dungeons[i].short_name);
     // tab index for accessibility - 5 is the first tab index after the input fields
     clone.tabIndex = i + 5;
 
